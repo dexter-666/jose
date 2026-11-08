@@ -150,15 +150,15 @@ function serveJsonFile(res, filePath, extractor) {
 
 server.listen(PORT, () => {
   console.log('================================================================');
-  console.log('🚀 SISTEMA SIDER - SOLICITUDES Y STOCK');
+  console.log(' SISTEMA SIDER - SOLICITUDES Y STOCK');
   console.log('================================================================');
-  console.log(`📡 Servidor activo en: http://localhost:${PORT}`);
+  console.log(` Servidor activo en: http://localhost:${PORT}`);
   console.log('');
-  console.log('📍 MÓDULOS DISPONIBLES:');
+  console.log(' MÓDULOS DISPONIBLES:');
   console.log(`   1. Portal Operario:              http://localhost:${PORT}/`);
   console.log(`   2. Módulo Administrador Oculto:  http://localhost:${PORT}/admin`);
   console.log('');
-  console.log('🔌 APIS REST DISPONIBLES:');
+  console.log(' APIS REST DISPONIBLES:');
   console.log(`   - Usuarios (1,093 registros):     http://localhost:${PORT}/api/usuarios`);
   console.log(`   - Catálogo Materiales SAP:       http://localhost:${PORT}/api/materiales`);
   console.log(`   - Stock por Almacenes:           http://localhost:${PORT}/api/stock`);

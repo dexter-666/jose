@@ -1862,11 +1862,12 @@
               <div>
                 <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--slate-700); margin-bottom:6px;">Método de Despacho de Correo</label>
                 <select id="email-cfg-service" class="form-input-search" style="padding:10px 14px; font-size:0.9rem;" onchange="toggleEmailServiceInputs()">
-                  <option value="local">Modo Corporativo Local + Vista Previa & Mailto (Recomendado)</option>
+                  <option value="smtp">Servidor SMTP / Gmail (Nodemailer Directo con tu cuenta)</option>
                   <option value="emailjs">EmailJS API (Envío directo desde navegador)</option>
                   <option value="api">Endpoint Serverless Vercel (/api/send-email / Resend)</option>
+                  <option value="local">Modo Corporativo Local + Vista Previa & Mailto (Sin servidor)</option>
                 </select>
-                <span style="font-size:0.75rem; color:var(--slate-500); margin-top:4px; display:block;">Genera plantillas HTML autorizadas con un clic.</span>
+                <span id="email-cfg-service-help" style="font-size:0.75rem; color:var(--slate-500); margin-top:4px; display:block;">Envío real automático usando tu cuenta Gmail (proyectofinal123.666@gmail.com) vía SMTP Nodemailer.</span>
               </div>
             </div>
 
@@ -1922,6 +1923,17 @@
               <!-- EMAILJS SETTINGS BOX -->
               <div id="cfg-box-emailjs" style="display:none;">
                 <div style="font-weight:800; font-size:0.88rem; color:var(--slate-800); margin-bottom:12px;">Parámetros de Cuenta EmailJS</div>
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-left:4px solid #16a34a; border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:0.8rem; color:#166534; line-height:1.45;">
+                  <strong style="display:block; margin-bottom:4px; font-weight:800;">Conexión directa con Google Gmail vía EmailJS:</strong>
+                  EmailJS te permite despachar correos directamente desde el navegador conectando tu cuenta Gmail con Google OAuth oficial sin necesidad de contraseñas de aplicación:
+                  <ol style="margin:6px 0 0 18px; padding:0;">
+                    <li>Regístrate gratis en <strong>emailjs.com</strong>.</li>
+                    <li>En <strong>Email Services</strong> -> <strong>Add New Service</strong>, selecciona <strong>Gmail</strong> y haz clic en <strong>Connect Account</strong> (con <code>proyectofinal123.666@gmail.com</code>).</li>
+                    <li>Copia tu <strong>Service ID</strong> y pégalo abajo.</li>
+                    <li>En <strong>Email Templates</strong>, crea una plantilla y copia el <strong>Template ID</strong>.</li>
+                    <li>En <strong>Account</strong>, copia tu <strong>Public Key</strong>.</li>
+                  </ol>
+                </div>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;">
                   <div>
                     <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--slate-600); margin-bottom:4px;">Service ID</label>
@@ -3818,6 +3830,19 @@ SIDERPERU S.A.A. - Planta Chimbote`;
       const boxSmtp = document.getElementById('cfg-box-smtp');
       const boxEmailjs = document.getElementById('cfg-box-emailjs');
       const boxApi = document.getElementById('cfg-box-api');
+      const helpText = document.getElementById('email-cfg-service-help');
+
+      if (helpText) {
+        if (serv === 'smtp') {
+          helpText.textContent = 'Envío real automático usando tu cuenta Gmail (proyectofinal123.666@gmail.com) vía SMTP Nodemailer.';
+        } else if (serv === 'emailjs') {
+          helpText.textContent = 'Envío directo desde el navegador vía EmailJS conectando tu cuenta de Google mediante OAuth oficial.';
+        } else if (serv === 'api') {
+          helpText.textContent = 'Envío a través del endpoint serverless en Vercel (/api/send-email) o servicio Resend.';
+        } else {
+          helpText.textContent = 'Genera plantillas HTML autorizadas con un clic y abre tu cliente de correo (Outlook/Gmail).';
+        }
+      }
 
       if (!extraBox) return;
 

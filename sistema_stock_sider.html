@@ -2232,6 +2232,14 @@
       "PT15 CURVA": ["1\"", "8 mm", "12 mm", "3/4x 12m"]
     };
 
+    // INITIAL MATERIAL TYPES PER WAREHOUSE
+    const INITIAL_WH_TYPES = {
+      "PT 08": ["Nacional", "Importado", "Fecoxi"],
+      "PT 09": ["Nacional", "Importado", "FM"],
+      "PT 15 BAHÍA": ["Nacional", "Fecoxi", "FM"],
+      "PT15 CURVA": ["Nacional", "Importado"]
+    };
+
     // DEFAULT EMAIL CONFIGURATION (SMTP + EMAILJS + RESEND)
     const DEFAULT_EMAIL_CONFIG = {
       adminEmail: "almacen.central@siderperu.com.pe",
@@ -2268,7 +2276,7 @@
     let savedCredentials = JSON.parse(localStorage.getItem('sider_credentials') || '{}');
     let requestsList = JSON.parse(localStorage.getItem('sider_requests') || '[]');
     let warehouseStock = JSON.parse(localStorage.getItem('sider_wh_stock') || JSON.stringify(INITIAL_STOCK));
-    let warehouseTypes = JSON.parse(localStorage.getItem('sider_wh_types') || JSON.stringify(INITIAL_WH_TYPES));
+    let warehouseTypes = JSON.parse(localStorage.getItem('sider_wh_types') || '{"PT 08":["Nacional","Importado","Fecoxi"],"PT 09":["Nacional","Importado","FM"],"PT 15 BAHÍA":["Nacional","Fecoxi","FM"],"PT15 CURVA":["Nacional","Importado"]}');
     let emailConfig = JSON.parse(localStorage.getItem('sider_email_config') || JSON.stringify(DEFAULT_EMAIL_CONFIG));
     if (!emailConfig.smtpUser) emailConfig.smtpUser = 'proyectofinal123.666@gmail.com';
     if (!emailConfig.adminEmail || emailConfig.adminEmail.includes('almacen.central')) emailConfig.adminEmail = 'proyectofinal123.666@gmail.com';
@@ -2473,7 +2481,7 @@
           <div style="font-size:0.78rem; color:var(--slate-500); margin-top:5px; display:flex; gap:8px; flex-wrap:wrap;">
             <span class="tag-badge">ID SAP: <strong>${user.id}</strong></span>
             <span class="tag-badge">${user.area}</span>
-            <span class="tag-badge ${u.group.includes('ACTIVO') ? 'tag-badge-active' : ''}">${user.group}</span>
+            <span class="tag-badge ${(user.group || '').includes('ACTIVO') ? 'tag-badge-active' : ''}">${user.group || 'PERSONAL SIDER'}</span>
           </div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="clearSelectedCandidate()">Cambiar</button>

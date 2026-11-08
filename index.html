@@ -2363,7 +2363,11 @@
       const path = (window.location.pathname || '').toLowerCase();
       const hash = (window.location.hash || '').replace('#', '').toLowerCase();
       const search = (window.location.search || '').toLowerCase();
-      if (path.includes('admin') || hash === 'admin' || search.includes('admin') || search.includes('mode=admin')) {
+      const href = (window.location.href || '').toLowerCase();
+      // Admin access: via hash #admin, path /admin, query ?admin, ?mode=admin, or any URL containing 'admin'
+      const isAdmin = path.includes('admin') || hash === 'admin' || hash.startsWith('admin') ||
+                      search.includes('admin') || search.includes('mode=admin');
+      if (isAdmin) {
         renderRoute('admin');
       } else {
         renderRoute('operario');
@@ -2372,6 +2376,10 @@
 
     window.addEventListener('hashchange', handleHashChange);
     window.addEventListener('popstate', handleHashChange);
+    // Also detect if page was loaded directly with /admin path (Vercel rewrite)
+    window.addEventListener('DOMContentLoaded', function() {
+      handleHashChange();
+    });
 
     // --- REALTIME SYNC ACROSS TABS ---
     window.addEventListener('storage', (e) => {

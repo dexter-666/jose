@@ -2294,7 +2294,10 @@
     }
 
     function navigateToAdmin() {
-      history.pushState(null, '', '#admin');
+      try {
+        window.location.hash = 'admin';
+      } catch(e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       renderRoute('admin');
     }
 
@@ -2303,8 +2306,11 @@
       const subtitle = document.getElementById('topbar-subtitle');
 
       if (route === 'admin') {
-        document.getElementById('view-operario').classList.remove('active');
-        document.getElementById('view-admin').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const opView = document.getElementById('view-operario');
+        const admView = document.getElementById('view-admin');
+        if (opView) opView.classList.remove('active');
+        if (admView) admView.classList.add('active');
         subtitle.textContent = 'Módulo Administrativo Exclusivo';
 
         topbarActions.innerHTML = `
@@ -2332,11 +2338,19 @@
               <div class="user-pill-avatar">${activeOperario.short.charAt(0)}</div>
               <span>${activeOperario.short}</span>
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="logoutOperario()">Cerrar Sesión</button>
+            <button class="btn btn-secondary btn-sm" onclick="navigateToAdmin()" style="display:inline-flex; align-items:center; gap:5px; font-size:0.8rem; padding:5px 10px;" title="Ir al panel de administración">
+              <svg class="icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Admin</span>
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="logoutOperario()">Salir</button>
           `;
         } else {
           topbarActions.innerHTML = `
             <span class="tag-badge tag-badge-active" style="padding:6px 14px; font-size:0.8rem; box-shadow:var(--shadow-sm);">SISTEMA EN LÍNEA</span>
+            <button class="btn btn-secondary btn-sm" onclick="navigateToAdmin()" style="display:inline-flex; align-items:center; gap:6px; font-size:0.82rem; padding:6px 12px; border-radius:8px; cursor:pointer;" title="Acceso al Panel de Control">
+              <svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Acceso Admin</span>
+            </button>
           `;
         }
       }
@@ -2345,7 +2359,8 @@
     function handleHashChange() {
       const path = (window.location.pathname || '').toLowerCase();
       const hash = (window.location.hash || '').replace('#', '').toLowerCase();
-      if (path.includes('admin') || hash === 'admin') {
+      const search = (window.location.search || '').toLowerCase();
+      if (path.includes('admin') || hash === 'admin' || search.includes('admin') || search.includes('mode=admin')) {
         renderRoute('admin');
       } else {
         renderRoute('operario');
@@ -2783,17 +2798,24 @@
     }
 
     function loginAdmin() {
-      const u = document.getElementById('admin-user-input').value.trim();
-      const p = document.getElementById('admin-pass-input').value.trim();
-      if (u === 'admin' && p === 'sider2026') {
+      const u = (document.getElementById('admin-user-input').value || '').trim();
+      const p = (document.getElementById('admin-pass-input').value || '').trim();
+
+      const isDefault = (u.toLowerCase() === 'admin' && p === 'sider2026');
+      const isGmailFull = (u.toLowerCase() === 'proyectofinal123.666@gmail.com' && (p === 'ProyectoFinal666' || p === 'sider2026'));
+      const isGmailUser = (u.toLowerCase() === 'proyectofinal123.666' && (p === 'ProyectoFinal666' || p === 'sider2026'));
+      const isAdminWithGmailPass = (u.toLowerCase() === 'admin' && p === 'ProyectoFinal666');
+
+      if (isDefault || isGmailFull || isGmailUser || isAdminWithGmailPass) {
         sessionStorage.setItem('sider_admin_logged', 'true');
         document.getElementById('admin-login-card').style.display = 'none';
         document.getElementById('admin-dashboard-view').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderRoute('admin');
         renderAdminDashboard();
         showToast('Acceso Autorizado', 'Bienvenido al Panel de Control de Administración SIDER.', 'success');
       } else {
-        showToast('Credenciales Inválidas', 'Usuario o contraseña incorrectos.', 'danger');
+        showToast('Credenciales Inválidas', 'Usuario o contraseña incorrectos. Puedes ingresar con admin / sider2026 o tu correo proyectofinal123.666@gmail.com.', 'danger');
       }
     }
 

@@ -6,12 +6,14 @@
   <title>SIDERPERU - Sistema de Solicitudes y Stock</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --sider-orange-50: #fff7ed;
       --sider-orange-100: #ffedd5;
       --sider-orange-200: #fed7aa;
+      --sider-orange-300: #fdba74;
+      --sider-orange-400: #fb923c;
       --sider-orange-500: #f97316;
       --sider-orange-600: #ea580c;
       --sider-orange-700: #c2410c;
@@ -42,6 +44,7 @@
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
       --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --shadow-glow: 0 0 25px -5px rgba(234, 88, 12, 0.35);
     }
 
     * {
@@ -58,20 +61,58 @@
       display: flex;
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ANIMATED AMBIENT BACKGROUND GLOWS */
+    .ambient-glow-1 {
+      position: fixed;
+      top: -120px;
+      left: -100px;
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.12), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatSlow 12s ease-in-out infinite alternate;
+    }
+
+    .ambient-glow-2 {
+      position: fixed;
+      bottom: -150px;
+      right: -100px;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(234, 88, 12, 0.08), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatSlow 16s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes floatSlow {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, 40px) scale(1.08); }
+      100% { transform: translate(-20px, 20px) scale(0.95); }
     }
 
     /* TOP CORPORATE NAVIGATION */
     .topbar {
-      background: #ffffff;
-      border-bottom: 1px solid var(--slate-200);
-      padding: 12px 28px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      padding: 12px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
       position: sticky;
       top: 0;
       z-index: 100;
+      transition: all 0.3s ease;
     }
 
     .brand-container {
@@ -80,20 +121,44 @@
       gap: 14px;
       text-decoration: none;
       color: inherit;
+      transition: transform 0.2s ease;
+    }
+
+    .brand-container:hover {
+      transform: translateY(-1px);
     }
 
     .brand-logo-mark {
       background: linear-gradient(135deg, var(--sider-orange-600), var(--sider-orange-700));
       color: #ffffff;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 1.05rem;
-      letter-spacing: 1px;
-      box-shadow: 0 2px 8px rgba(234, 88, 12, 0.25);
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 1.2px;
+      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
       display: flex;
       align-items: center;
       gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo-mark::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: translateX(-100%);
+      animation: shimmerLoop 5s infinite;
+    }
+
+    @keyframes shimmerLoop {
+      0% { transform: translateX(-100%); }
+      20%, 100% { transform: translateX(100%); }
     }
 
     .brand-text {
@@ -102,18 +167,18 @@
     }
 
     .brand-title {
-      font-weight: 800;
-      font-size: 0.98rem;
+      font-weight: 900;
+      font-size: 1.05rem;
       color: var(--slate-900);
-      letter-spacing: -0.2px;
+      letter-spacing: -0.3px;
     }
 
     .brand-subtitle {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--slate-500);
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
     }
 
     .topbar-actions {
@@ -126,26 +191,29 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: var(--slate-100);
-      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 5px 14px 5px 6px;
       border-radius: 9999px;
       border: 1px solid var(--slate-200);
       font-size: 0.85rem;
       color: var(--slate-700);
-      font-weight: 600;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+      animation: fadeIn 0.3s ease;
     }
 
     .user-pill-avatar {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: var(--sider-orange-600);
+      background: linear-gradient(135deg, var(--sider-orange-500), var(--sider-orange-700));
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 800;
+      box-shadow: 0 2px 6px rgba(234, 88, 12, 0.3);
     }
 
     .admin-mode-pill {
@@ -154,60 +222,86 @@
       border: 1px solid #fecaca;
       font-size: 0.78rem;
       font-weight: 800;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 9999px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       letter-spacing: 0.3px;
+      animation: pulseLight 2s infinite;
     }
 
-    /* BUTTONS */
+    @keyframes pulseLight {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+      50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    }
+
+    /* BUTTONS WITH SMOOTH HOVER & SHINE */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 0.9rem;
+      padding: 11px 20px;
+      border-radius: 12px;
+      font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       border: 1px solid transparent;
       outline: none;
       text-decoration: none;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn:active {
-      transform: scale(0.98);
+      transform: scale(0.97) !important;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--sider-orange-600), var(--sider-orange-700));
       color: #ffffff;
-      box-shadow: 0 2px 10px rgba(234, 88, 12, 0.28);
+      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.25), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
     }
 
     .btn-primary:hover {
       background: linear-gradient(135deg, #d94e07, var(--sider-orange-800));
-      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.38);
+      box-shadow: 0 6px 20px rgba(234, 88, 12, 0.42);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:hover::after {
+      transform: translateX(100%);
     }
 
     .btn-secondary {
       background: #ffffff;
       color: var(--slate-700);
       border-color: var(--slate-200);
+      box-shadow: var(--shadow-sm);
     }
 
     .btn-secondary:hover {
       background: var(--slate-50);
       border-color: var(--slate-300);
       color: var(--slate-900);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
     .btn-outline-orange {
-      background: transparent;
+      background: #ffffff;
       color: var(--sider-orange-700);
       border-color: var(--sider-orange-200);
     }
@@ -215,6 +309,7 @@
     .btn-outline-orange:hover {
       background: var(--sider-orange-50);
       border-color: var(--sider-orange-500);
+      transform: translateY(-2px);
     }
 
     .btn-danger {
@@ -225,39 +320,55 @@
 
     .btn-danger:hover {
       background: #fecaca;
+      transform: translateY(-2px);
     }
 
     .btn-sm {
-      padding: 6px 12px;
+      padding: 7px 14px;
       font-size: 0.82rem;
-      border-radius: 8px;
+      border-radius: 9px;
     }
 
     /* MAIN CONTAINER & VIEWS */
     .container {
-      max-width: 1200px;
+      max-width: 1220px;
       width: 100%;
       margin: 28px auto;
       padding: 0 20px;
       flex: 1;
+      position: relative;
+      z-index: 1;
     }
 
     .view-section {
       display: none;
+      animation: fadeInView 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .view-section.active {
       display: block;
     }
 
-    /* CARDS */
+    @keyframes fadeInView {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CARDS WITH FROSTED GLASS EFFECT */
     .card {
-      background: #ffffff;
-      border-radius: 16px;
-      border: 1px solid var(--slate-200);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 6px 16px rgba(0,0,0,0.03);
-      padding: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      padding: 26px;
       margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(203, 213, 225, 0.9);
+      box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.06);
     }
 
     .card-header {
@@ -266,92 +377,186 @@
       align-items: center;
       border-bottom: 1px solid var(--slate-100);
       padding-bottom: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
       flex-wrap: wrap;
       gap: 12px;
     }
 
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 800;
       color: var(--slate-900);
-      letter-spacing: -0.2px;
+      letter-spacing: -0.3px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    /* LOGIN FORMS */
-    .login-container {
-      max-width: 480px;
-      margin: 40px auto;
+    /* HERO PORTAL (HOME / LOGIN REDESIGN) */
+    .hero-portal {
+      max-width: 620px;
+      margin: 30px auto 40px auto;
+      text-align: center;
+      animation: heroEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .login-header-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
+    @keyframes heroEntrance {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .hero-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: var(--sider-orange-50);
-      color: var(--sider-orange-600);
+      border: 1px solid var(--sider-orange-200);
+      color: var(--sider-orange-800);
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.12);
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sider-orange-600);
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.3);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    .hero-headline {
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: var(--slate-900);
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .hero-subtitle {
+      font-size: 0.96rem;
+      color: var(--slate-500);
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .hero-stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .hero-stat-chip {
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      padding: 6px 14px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--slate-700);
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: 16px;
-      border: 1px solid var(--sider-orange-200);
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      transition: all 0.2s ease;
     }
 
-    .form-group {
-      margin-bottom: 18px;
+    .hero-stat-chip:hover {
+      transform: translateY(-2px);
+      border-color: var(--sider-orange-300);
+      color: var(--sider-orange-900);
+    }
+
+    .login-box-card {
+      background: #ffffff;
+      border-radius: 24px;
+      border: 1.5px solid var(--slate-200);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
+      padding: 32px 30px;
+      text-align: left;
       position: relative;
     }
 
-    .form-label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--slate-700);
-      margin-bottom: 6px;
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    .form-input {
+    .search-input-icon {
+      position: absolute;
+      left: 16px;
+      color: var(--slate-400);
+      font-size: 1.15rem;
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
+
+    .form-input-search {
       width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--slate-200);
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 15px 16px 15px 46px;
+      border: 2px solid var(--slate-200);
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--slate-900);
-      background: #ffffff;
+      background: var(--slate-50);
       outline: none;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
     }
 
-    .form-input:focus {
+    .form-input-search:focus {
+      background: #ffffff;
       border-color: var(--sider-orange-500);
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+      box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+    }
+
+    .form-input-search:focus + .search-input-icon {
+      color: var(--sider-orange-600);
     }
 
     .autocomplete-box {
       position: absolute;
-      top: 100%;
+      top: calc(100% + 6px);
       left: 0;
       right: 0;
       background: #ffffff;
-      border: 1.5px solid var(--slate-300);
-      border-radius: 12px;
-      max-height: 260px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 16px;
+      max-height: 280px;
       overflow-y: auto;
       z-index: 50;
       display: none;
-      box-shadow: var(--shadow-xl);
-      margin-top: 4px;
+      box-shadow: 0 20px 35px -5px rgba(0,0,0,0.15);
+      animation: dropDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes dropDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .autocomplete-item {
-      padding: 12px 16px;
+      padding: 12px 18px;
       cursor: pointer;
       border-bottom: 1px solid var(--slate-100);
-      transition: background 0.1s ease;
+      transition: all 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .autocomplete-item:last-child {
@@ -360,62 +565,72 @@
 
     .autocomplete-item:hover {
       background: var(--sider-orange-50);
+      padding-left: 22px;
     }
 
     .autocomplete-name {
-      font-weight: 700;
+      font-weight: 800;
       color: var(--slate-900);
-      font-size: 0.92rem;
+      font-size: 0.94rem;
     }
 
     .autocomplete-meta {
       font-size: 0.78rem;
       color: var(--slate-500);
-      margin-top: 2px;
+      margin-top: 3px;
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
+      align-items: center;
     }
 
     .tag-badge {
       display: inline-block;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
       background: var(--slate-100);
       color: var(--slate-600);
+      letter-spacing: 0.2px;
     }
 
     .tag-badge-active {
       background: #ecfdf5;
       color: #065f46;
+      border: 1px solid #a7f3d0;
     }
 
-    /* OPERARIO CALCULATOR DASHBOARD */
-    .calc-layout {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 24px;
+    /* SELECTED USER BANNER */
+    .user-selected-hero {
+      background: linear-gradient(135deg, var(--sider-orange-50), #fff);
+      border: 1.5px solid var(--sider-orange-200);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.08);
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @media (max-width: 950px) {
-      .calc-layout {
-        grid-template-columns: 1fr;
-      }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     /* DIGITAL INDUSTRIAL TERMINAL (VISOR) */
     .terminal-visor {
-      background: linear-gradient(145deg, var(--slate-950), #161a23);
+      background: linear-gradient(145deg, var(--slate-950), #161c27);
       color: #ffffff;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 22px;
+      border-radius: 18px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
       border: 1px solid #2d3748;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.18);
       position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
 
     .terminal-visor::before {
@@ -423,41 +638,50 @@
       position: absolute;
       top: 0; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--sider-orange-500), #facc15, var(--sider-orange-600));
+      background-size: 200% 100%;
+      animation: scanline 4s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
     }
 
     .terminal-top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--slate-400);
     }
 
     .terminal-sap-badge {
-      background: rgba(249, 115, 22, 0.2);
+      background: rgba(249, 115, 22, 0.22);
       color: #fdba74;
-      padding: 3px 8px;
-      border-radius: 6px;
-      border: 1px solid rgba(249, 115, 22, 0.4);
-      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(249, 115, 22, 0.45);
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
     .terminal-wh-badge {
-      background: rgba(255, 255, 255, 0.1);
-      color: #e2e8f0;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 700;
+      background: rgba(255, 255, 255, 0.12);
+      color: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 800;
     }
 
     .terminal-main-text {
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
+      font-size: 1.75rem;
+      font-weight: 900;
+      letter-spacing: -0.6px;
       color: #ffffff;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      transition: all 0.2s ease;
     }
 
     .terminal-sub-row {
@@ -465,19 +689,20 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
-      font-size: 0.88rem;
+      gap: 10px;
+      font-size: 0.9rem;
       color: var(--slate-300);
     }
 
     .stock-indicator {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
+      gap: 8px;
+      padding: 5px 12px;
       border-radius: 9999px;
-      font-size: 0.78rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
     }
 
     .stock-in {
@@ -492,46 +717,72 @@
       border: 1px solid rgba(245, 158, 11, 0.4);
     }
 
+    .radar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: radarPulse 1.8s infinite;
+    }
+
+    @keyframes radarPulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
     /* CHIPS & BUTTON SELECTORS */
     .chip-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 18px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .chip-btn {
-      padding: 9px 15px;
-      border-radius: 10px;
+      padding: 10px 18px;
+      border-radius: 12px;
       border: 1.5px solid var(--slate-200);
       background: #ffffff;
       color: var(--slate-700);
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: var(--shadow-sm);
     }
 
     .chip-btn:hover {
       border-color: var(--sider-orange-400);
       background: var(--sider-orange-50);
       color: var(--sider-orange-900);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .chip-btn:active {
+      transform: scale(0.95);
     }
 
     .chip-btn.selected {
-      background: var(--sider-orange-600);
+      background: linear-gradient(135deg, var(--sider-orange-600), var(--sider-orange-700));
       color: #ffffff;
       border-color: var(--sider-orange-700);
-      box-shadow: 0 3px 8px rgba(234, 88, 12, 0.3);
+      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+      transform: translateY(-1px);
     }
 
     .chip-sap-preview {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       opacity: 0.85;
+      background: rgba(0,0,0,0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
     }
 
     /* QUANTITY STEPPER */
@@ -539,50 +790,61 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .qty-btn {
-      width: 40px;
-      height: 42px;
-      border-radius: 8px;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
       border: 1.5px solid var(--slate-200);
       background: #ffffff;
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: var(--slate-700);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.12s ease;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
     }
 
     .qty-btn:hover {
       background: var(--slate-100);
       border-color: var(--slate-300);
+      color: var(--slate-900);
+      transform: translateY(-1px);
+    }
+
+    .qty-btn:active {
+      transform: scale(0.92);
     }
 
     .qty-input {
-      width: 100px;
+      width: 110px;
+      height: 44px;
       text-align: center;
-      font-size: 1.1rem;
-      font-weight: 800;
-      padding: 9px;
-      border-radius: 8px;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 10px;
       border: 1.5px solid var(--slate-200);
       outline: none;
+      color: var(--slate-900);
+      background: #ffffff;
+      transition: all 0.2s ease;
     }
 
     .qty-input:focus {
       border-color: var(--sider-orange-500);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
     }
 
-    /* STATUS BADGES */
+    /* STATUS BADGES WITH PULSE */
     .status-badge {
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 9999px;
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       font-weight: 800;
       display: inline-flex;
       align-items: center;
@@ -594,6 +856,12 @@
       background: #fef3c7;
       color: #92400e;
       border: 1px solid #fde68a;
+      animation: pulseSoft 2.5s infinite;
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
     }
 
     .status-approved {
@@ -611,16 +879,24 @@
     /* REQUEST NOTIFICATION CARDS */
     .req-card {
       border: 1px solid var(--slate-200);
-      border-radius: 12px;
-      padding: 14px 16px;
+      border-radius: 14px;
+      padding: 16px 18px;
       margin-bottom: 12px;
       background: #ffffff;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      animation: slideInCard 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideInCard {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .req-card:hover {
       border-color: var(--slate-300);
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
     }
 
     .req-card-top {
@@ -633,64 +909,74 @@
     .req-card-id {
       font-weight: 800;
       color: var(--slate-900);
-      font-size: 0.95rem;
+      font-size: 0.98rem;
     }
 
     .req-card-meta {
-      font-size: 0.82rem;
+      font-size: 0.83rem;
       color: var(--slate-500);
       display: flex;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
     }
 
     .req-card-admin-note {
-      margin-top: 10px;
-      padding: 8px 12px;
+      margin-top: 12px;
+      padding: 10px 14px;
       background: var(--sider-orange-50);
-      border-left: 3px solid var(--sider-orange-600);
-      border-radius: 0 8px 8px 0;
-      font-size: 0.82rem;
+      border-left: 3.5px solid var(--sider-orange-600);
+      border-radius: 0 10px 10px 0;
+      font-size: 0.84rem;
       color: var(--sider-orange-950);
+      line-height: 1.45;
     }
 
     /* ADMIN DASHBOARD */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 26px;
     }
 
     .kpi-card {
       background: #ffffff;
       border: 1px solid var(--slate-200);
-      border-radius: 14px;
-      padding: 18px 20px;
+      border-radius: 16px;
+      padding: 20px 22px;
       box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
     }
 
     .kpi-label {
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--slate-500);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
     }
 
     .kpi-value {
-      font-size: 1.8rem;
-      font-weight: 800;
+      font-size: 2.1rem;
+      font-weight: 900;
       color: var(--slate-900);
-      letter-spacing: -0.5px;
+      letter-spacing: -0.8px;
     }
 
     /* ADMIN TABLE */
     .table-container {
       overflow-x: auto;
       border: 1px solid var(--slate-200);
-      border-radius: 12px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
     }
 
     .data-table {
@@ -704,27 +990,29 @@
       background: var(--slate-100);
       color: var(--slate-700);
       font-weight: 800;
-      padding: 12px 14px;
+      padding: 14px 16px;
       border-bottom: 1px solid var(--slate-200);
       white-space: nowrap;
     }
 
     .data-table td {
-      padding: 12px 14px;
+      padding: 13px 16px;
       border-bottom: 1px solid var(--slate-200);
       color: var(--slate-800);
+      transition: background 0.15s ease;
     }
 
-    .data-table tr:hover {
+    .data-table tr:hover td {
       background: var(--slate-50);
     }
 
-    /* MODALS */
+    /* MODALS WITH BACKDROP BLUR */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -732,7 +1020,7 @@
       padding: 20px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal-overlay.open {
@@ -742,14 +1030,14 @@
 
     .modal-box {
       background: #ffffff;
-      border-radius: 18px;
+      border-radius: 22px;
       max-width: 520px;
       width: 100%;
-      box-shadow: var(--shadow-xl);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
       border: 1px solid var(--slate-200);
       overflow: hidden;
-      transform: translateY(12px) scale(0.98);
-      transition: transform 0.2s ease;
+      transform: translateY(20px) scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal-overlay.open .modal-box {
@@ -757,7 +1045,7 @@
     }
 
     .modal-header {
-      padding: 18px 24px;
+      padding: 20px 26px;
       border-bottom: 1px solid var(--slate-100);
       display: flex;
       justify-content: space-between;
@@ -765,30 +1053,42 @@
     }
 
     .modal-title {
-      font-weight: 800;
-      font-size: 1.1rem;
+      font-weight: 900;
+      font-size: 1.15rem;
       color: var(--slate-900);
     }
 
     .modal-close-btn {
-      background: none;
+      background: var(--slate-100);
       border: none;
-      font-size: 1.25rem;
-      color: var(--slate-400);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--slate-500);
       cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .modal-close-btn:hover {
+      background: var(--slate-200);
+      color: var(--slate-800);
     }
 
     .modal-body {
-      padding: 24px;
+      padding: 26px;
     }
 
     .modal-footer {
-      padding: 16px 24px;
+      padding: 18px 26px;
       background: var(--slate-50);
       border-top: 1px solid var(--slate-100);
       display: flex;
       justify-content: flex-end;
-      gap: 10px;
+      gap: 12px;
     }
 
     /* TOAST NOTIFICATIONS */
@@ -799,26 +1099,26 @@
       z-index: 9999;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      max-width: 380px;
+      gap: 12px;
+      max-width: 400px;
       pointer-events: none;
     }
 
     .toast-card {
       background: var(--slate-900);
       color: #ffffff;
-      padding: 14px 18px;
-      border-radius: 12px;
-      box-shadow: var(--shadow-xl);
+      padding: 16px 20px;
+      border-radius: 14px;
+      box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255,255,255,0.12);
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       pointer-events: auto;
-      animation: slideUp 0.25s ease;
+      animation: toastSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(16px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    @keyframes toastSlide {
+      from { transform: translateX(50px) scale(0.9); opacity: 0; }
+      to { transform: translateX(0) scale(1); opacity: 1; }
     }
 
     /* FOOTER */
@@ -826,21 +1126,27 @@
       margin-top: auto;
       border-top: 1px solid var(--slate-200);
       background: #ffffff;
-      padding: 16px 28px;
-      font-size: 0.8rem;
+      padding: 18px 32px;
+      font-size: 0.82rem;
       color: var(--slate-500);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
+      position: relative;
+      z-index: 10;
     }
 
     .admin-secret-link {
       color: var(--slate-400);
       text-decoration: none;
-      font-size: 0.76rem;
-      transition: color 0.15s ease;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .admin-secret-link:hover {
@@ -849,6 +1155,10 @@
   </style>
 </head>
 <body>
+
+  <!-- AMBIENT GLOWS -->
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
 
   <!-- TOPBAR -->
   <header class="topbar">
@@ -873,79 +1183,112 @@
     <!-- VIEW 1: PORTAL OPERARIO -->
     <section id="view-operario" class="view-section active">
 
-      <!-- STEP 1: OPERARIO LOGIN CARD -->
-      <div id="op-login-card" class="card login-container">
-        <div class="login-header-icon">
-          <span>🏗️</span>
+      <!-- HERO INTERFAZ DE INICIO (REDESIGN ANIMADO) -->
+      <div id="op-login-card" class="hero-portal">
+        <div class="hero-badge-pill">
+          <span class="hero-badge-dot"></span>
+          <span>SISTEMA DE SOLICITUDES Y STOCK DE ACERO</span>
         </div>
-        <h2 style="font-size:1.35rem; font-weight:800; color:var(--slate-900); margin-bottom:6px;">
-          Portal de Operarios y Despacho
-        </h2>
-        <p style="font-size:0.88rem; color:var(--slate-500); margin-bottom:20px; line-height:1.4;">
-          Ingresa con tu <strong>Primer Nombre + Primer Apellido</strong> (ej. <em>Carlos Ulloa</em>) o tu <strong>Nombre Completo</strong>.
+
+        <h1 class="hero-headline">
+          Portal de Despacho de Planta
+        </h1>
+        <p class="hero-subtitle">
+          Empresa Siderúrgica del Perú S.A.A. · Complejo Industrial Chimbote
         </p>
 
-        <div class="form-group">
-          <label class="form-label">Buscar Colaborador / Operario</label>
-          <input type="text" id="op-search-input" class="form-input" placeholder="Escribe tu nombre..." autocomplete="off" oninput="handleSearchOperario(this.value)" />
-          <div id="op-autocomplete" class="autocomplete-box"></div>
+        <div class="hero-stats-row">
+          <div class="hero-stat-chip">
+            <span>🏭</span>
+            <span>Planta Chimbote</span>
+          </div>
+          <div class="hero-stat-chip">
+            <span>📦</span>
+            <span>4 Almacenes (PT 08, 09, 15B, 15C)</span>
+          </div>
+          <div class="hero-stat-chip">
+            <span>👥</span>
+            <span>1,093 Colaboradores Activos</span>
+          </div>
+          <div class="hero-stat-chip">
+            <span>⚡</span>
+            <span>Cálculo SAP Instantáneo</span>
+          </div>
         </div>
 
-        <div id="op-selected-card" style="display:none; background:var(--sider-orange-50); border:1.5px solid var(--sider-orange-200); border-radius:12px; padding:14px; margin-bottom:18px;">
-          <!-- User details card -->
-        </div>
+        <!-- SEARCH CARD -->
+        <div class="login-box-card">
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:0.88rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">
+              Identifícate para Iniciar Solicitud
+            </label>
+            <div class="search-input-wrap">
+              <span class="search-input-icon">🔍</span>
+              <input type="text" id="op-search-input" class="form-input-search" placeholder="Escribe tu Nombre, Apellido o ID SAP..." autocomplete="off" oninput="handleSearchOperario(this.value)" />
+              <div id="op-autocomplete" class="autocomplete-box"></div>
+            </div>
+            <p style="font-size:0.78rem; color:var(--slate-400); margin-top:8px;">
+              Ejemplo: <em>Carlos Ulloa</em> o <em>William Martinez</em>
+            </p>
+          </div>
 
-        <!-- FIRST TIME SETUP -->
-        <div id="op-first-time-box" style="display:none;">
-          <div style="background:var(--amber-50); border-left:4px solid var(--amber-500); padding:10px 14px; border-radius:6px; margin-bottom:16px; font-size:0.84rem; color:#92400e;">
-            <strong>Primer ingreso detectado:</strong> Registra tu correo electrónico y define una contraseña para activar tu cuenta.
+          <!-- SELECTED USER CARD -->
+          <div id="op-selected-card" style="display:none;" class="user-selected-hero">
+            <!-- Injected via JS -->
           </div>
-          <div class="form-group">
-            <label class="form-label">Correo Electrónico para Notificaciones</label>
-            <input type="email" id="op-first-email" class="form-input" placeholder="nombre@sider.com.pe" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Crear Contraseña</label>
-            <input type="password" id="op-first-pass" class="form-input" placeholder="Mínimo 4 caracteres" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Confirmar Contraseña</label>
-            <input type="password" id="op-first-pass-confirm" class="form-input" placeholder="Vuelve a escribir la contraseña" />
-          </div>
-          <button class="btn btn-primary" style="width:100%;" onclick="completeOperarioRegistration()">
-            Guardar y Comenzar a Operar
-          </button>
-        </div>
 
-        <!-- RETURNING LOGIN -->
-        <div id="op-returning-box" style="display:none;">
-          <div class="form-group">
-            <label class="form-label">Contraseña Registrada</label>
-            <input type="password" id="op-returning-pass" class="form-input" placeholder="Ingresa tu contraseña" />
+          <!-- FIRST TIME SETUP (REGISTRATION) -->
+          <div id="op-first-time-box" style="display:none; animation:fadeIn 0.3s ease;">
+            <div style="background:var(--amber-50); border-left:4px solid var(--amber-500); padding:12px 16px; border-radius:10px; margin-bottom:18px; font-size:0.86rem; color:#92400e; line-height:1.4;">
+              <strong>¡Primer ingreso detectado!</strong> Registra tu correo para recibir las notificaciones y define tu contraseña de acceso.
+            </div>
+            <div style="margin-bottom:14px;">
+              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Correo Corporativo o Personal</label>
+              <input type="email" id="op-first-email" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="correo@sider.com.pe" />
+            </div>
+            <div style="margin-bottom:14px;">
+              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Crear Nueva Contraseña</label>
+              <input type="password" id="op-first-pass" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="Mínimo 4 caracteres" />
+            </div>
+            <div style="margin-bottom:18px;">
+              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Confirmar Contraseña</label>
+              <input type="password" id="op-first-pass-confirm" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="Repite tu contraseña" />
+            </div>
+            <button class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem;" onclick="completeOperarioRegistration()">
+              Guardar Contraseña e Ingresar
+            </button>
           </div>
-          <button class="btn btn-primary" style="width:100%;" onclick="completeOperarioLogin()">
-            Ingresar al Panel de Solicitudes
-          </button>
-          <div style="text-align:center; margin-top:14px;">
-            <a href="#" onclick="openPasswordRecovery(); return false;" style="font-size:0.82rem; color:var(--sider-orange-700); font-weight:700; text-decoration:none;">
-              ¿Olvidaste tu contraseña?
-            </a>
+
+          <!-- RETURNING LOGIN -->
+          <div id="op-returning-box" style="display:none; animation:fadeIn 0.3s ease;">
+            <div style="margin-bottom:18px;">
+              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Contraseña Registrada</label>
+              <input type="password" id="op-returning-pass" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="Ingresa tu contraseña" onkeydown="if(event.key==='Enter') completeOperarioLogin()" />
+            </div>
+            <button class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem;" onclick="completeOperarioLogin()">
+              Ingresar al Panel de Despacho
+            </button>
+            <div style="text-align:center; margin-top:14px;">
+              <a href="#" onclick="openPasswordRecovery(); return false;" style="font-size:0.82rem; color:var(--sider-orange-700); font-weight:700; text-decoration:none;">
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- STEP 2: OPERARIO DASHBOARD -->
+      <!-- OPERARIO DASHBOARD -->
       <div id="op-dashboard" style="display:none;">
-        <div class="calc-layout">
+        <div style="display:grid; grid-template-columns:1.35fr 1fr; gap:26px;">
           
           <!-- CALCULATOR TERMINAL -->
           <div class="card">
             <div class="card-header">
               <div class="card-title">
-                <span>Calculadora de Varillas y Despacho</span>
+                <span>Calculadora de Solicitud de Varillas</span>
               </div>
-              <span class="tag-badge" style="background:var(--sider-orange-50); color:var(--sider-orange-800); font-weight:800;">
-                CATÁLOGO SAP
+              <span class="tag-badge" style="background:var(--sider-orange-50); color:var(--sider-orange-800); font-weight:800; border:1px solid var(--sider-orange-200);">
+                SAP INTEGRADO
               </span>
             </div>
 
@@ -959,28 +1302,29 @@
                 Varilla 1/2" x 9m (Nacional)
               </div>
               <div class="terminal-sub-row">
-                <span id="terminal-qty-text">Cantidad: 10 unidades</span>
+                <span id="terminal-qty-text" style="font-weight:700;">Cantidad: 10 unidades</span>
                 <span class="stock-indicator stock-in" id="terminal-stock-indicator">
-                  🟢 Medida activa en almacén
+                  <span class="radar-dot"></span>
+                  <span>Medida activa en almacén</span>
                 </span>
               </div>
             </div>
 
             <!-- Selector 1: Diámetro -->
-            <div class="form-group">
-              <label class="form-label">1. Diámetro / Medida de Barra</label>
+            <div style="margin-bottom:18px;">
+              <label style="display:block; font-size:0.86rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">1. Diámetro / Medida de Barra</label>
               <div class="chip-grid" id="chips-diametro"></div>
             </div>
 
             <!-- Selector 2: Tipo / Procedencia -->
-            <div class="form-group">
-              <label class="form-label">2. Tipo / Procedencia (Código SAP)</label>
+            <div style="margin-bottom:18px;">
+              <label style="display:block; font-size:0.86rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">2. Tipo / Procedencia (Código SAP)</label>
               <div class="chip-grid" id="chips-tipo"></div>
             </div>
 
             <!-- Selector 3: Largo -->
-            <div class="form-group">
-              <label class="form-label">3. Largo Estándar</label>
+            <div style="margin-bottom:18px;">
+              <label style="display:block; font-size:0.86rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">3. Largo Estándar</label>
               <div class="chip-grid" id="chips-largo">
                 <button class="chip-btn selected" onclick="selectLargo('9m', this)">9m</button>
                 <button class="chip-btn" onclick="selectLargo('12m', this)">12m</button>
@@ -990,8 +1334,8 @@
             </div>
 
             <!-- Selector 4: Almacén -->
-            <div class="form-group">
-              <label class="form-label">4. Almacén Objetivo</label>
+            <div style="margin-bottom:18px;">
+              <label style="display:block; font-size:0.86rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">4. Almacén Objetivo</label>
               <div class="chip-grid" id="chips-almacen">
                 <button class="chip-btn selected" onclick="selectAlmacen('PT 08', this)">PT 08</button>
                 <button class="chip-btn" onclick="selectAlmacen('PT 09', this)">PT 09</button>
@@ -1001,8 +1345,8 @@
             </div>
 
             <!-- Selector 5: Cantidad con stepper -->
-            <div class="form-group">
-              <label class="form-label">5. Cantidad Requerida (Unidades / Paquetes)</label>
+            <div style="margin-bottom:24px;">
+              <label style="display:block; font-size:0.86rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">5. Cantidad Requerida</label>
               <div class="qty-stepper">
                 <button class="qty-btn" onclick="stepQty(-10)">-10</button>
                 <button class="qty-btn" onclick="stepQty(-1)">-1</button>
@@ -1012,8 +1356,8 @@
               </div>
             </div>
 
-            <button class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem;" onclick="submitOperarioRequest()">
-              Enviar Solicitud a Administración
+            <button class="btn btn-primary" style="width:100%; padding:15px; font-size:1.02rem;" onclick="submitOperarioRequest()">
+              🚀 Enviar Solicitud de Despacho
             </button>
           </div>
 
@@ -1027,10 +1371,10 @@
                 0 Solicitudes
               </span>
             </div>
-            <p style="font-size:0.84rem; color:var(--slate-500); margin-bottom:14px;">
-              Aquí recibes la respuesta oficial del Administrador además del correo automático enviado a tu bandeja.
+            <p style="font-size:0.84rem; color:var(--slate-500); margin-bottom:16px;">
+              Historial de pedidos en tiempo real con confirmación del Administrador.
             </p>
-            <div id="op-my-requests-list">
+            <div id="op-my-requests-list" style="max-height:640px; overflow-y:auto;">
               <!-- Rendered list of requests -->
             </div>
           </div>
@@ -1043,30 +1387,30 @@
     <section id="view-admin" class="view-section">
       
       <!-- ADMIN LOGIN (SOLO VISIBLE AL ENTRAR A /admin) -->
-      <div id="admin-login-card" class="card login-container">
-        <div class="login-header-icon" style="background:#fef2f2; border-color:#fecaca; color:#dc2626;">
+      <div id="admin-login-card" class="login-box-card" style="max-width:440px; margin:40px auto;">
+        <div style="width:50px; height:50px; border-radius:14px; background:#fef2f2; border:1.5px solid #fecaca; color:#dc2626; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:16px;">
           <span>🔒</span>
         </div>
-        <h2 style="font-size:1.35rem; font-weight:800; color:var(--slate-900); margin-bottom:6px;">
+        <h2 style="font-size:1.35rem; font-weight:900; color:var(--slate-900); margin-bottom:6px;">
           Acceso de Administración
         </h2>
         <p style="font-size:0.86rem; color:var(--slate-500); margin-bottom:20px; line-height:1.4;">
-          Módulo exclusivo para supervisión, aprobación de pedidos y control de stock por almacén.
+          Módulo exclusivo para supervisión y aprobación de stock en planta.
         </p>
 
-        <div class="form-group">
-          <label class="form-label">Usuario Administrador</label>
-          <input type="text" id="admin-user-input" class="form-input" value="admin" />
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Usuario Administrador</label>
+          <input type="text" id="admin-user-input" class="form-input-search" style="padding-left:14px; font-size:0.92rem;" value="admin" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Contraseña</label>
-          <input type="password" id="admin-pass-input" class="form-input" value="sider2026" />
+        <div style="margin-bottom:18px;">
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Contraseña</label>
+          <input type="password" id="admin-pass-input" class="form-input-search" style="padding-left:14px; font-size:0.92rem;" value="sider2026" onkeydown="if(event.key==='Enter') loginAdmin()" />
         </div>
-        <button class="btn btn-primary" style="width:100%;" onclick="loginAdmin()">
+        <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="loginAdmin()">
           Iniciar Sesión Administrativa
         </button>
-        <p style="font-size:0.75rem; color:var(--slate-400); text-align:center; margin-top:12px;">
-          Credenciales prellenadas para evaluación: <strong>admin</strong> / <strong>sider2026</strong>
+        <p style="font-size:0.75rem; color:var(--slate-400); text-align:center; margin-top:14px;">
+          Credenciales de evaluación: <strong>admin</strong> / <strong>sider2026</strong>
         </p>
       </div>
 
@@ -1080,15 +1424,15 @@
             <div class="kpi-value" id="kpi-total">0</div>
           </div>
           <div class="kpi-card" style="border-left:4px solid var(--amber-500);">
-            <div class="kpi-label">Pendientes de Aprobación</div>
+            <div class="kpi-label">Pendientes</div>
             <div class="kpi-value" style="color:#b45309;" id="kpi-pending">0</div>
           </div>
           <div class="kpi-card" style="border-left:4px solid var(--emerald-500);">
-            <div class="kpi-label">Aprobadas / En Carga</div>
+            <div class="kpi-label">Aprobadas / Carga</div>
             <div class="kpi-value" style="color:#059669;" id="kpi-approved">0</div>
           </div>
           <div class="kpi-card" style="border-left:4px solid var(--rose-500);">
-            <div class="kpi-label">Rechazadas / Sin Stock</div>
+            <div class="kpi-label">Rechazadas</div>
             <div class="kpi-value" style="color:#e11d48;" id="kpi-rejected">0</div>
           </div>
         </div>
@@ -1110,7 +1454,7 @@
           </div>
 
           <!-- Filter & Search toolbar -->
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;">
             <div class="chip-grid" style="margin-bottom:0;">
               <button class="chip-btn selected" id="filter-btn-TODOS" onclick="setAdminFilter('TODOS', this)">Todas</button>
               <button class="chip-btn" id="filter-btn-PENDIENTE" onclick="setAdminFilter('PENDIENTE', this)">Pendientes</button>
@@ -1119,7 +1463,7 @@
             </div>
 
             <div style="position:relative; width:260px;">
-              <input type="text" id="admin-search-box" class="form-input" style="padding:8px 12px; font-size:0.85rem;" placeholder="Buscar por operario o SAP..." oninput="renderAdminTable()" />
+              <input type="text" id="admin-search-box" class="form-input-search" style="padding:10px 14px; font-size:0.86rem;" placeholder="Buscar por operario o SAP..." oninput="renderAdminTable()" />
             </div>
           </div>
 
@@ -1148,9 +1492,9 @@
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">Gestión de Medidas Activas por Almacén</div>
+              <div class="card-title">Control de Medidas Activas por Almacén</div>
               <p style="font-size:0.84rem; color:var(--slate-500); margin-top:4px;">
-                Control de disponibilidad en tiempo real para los 4 almacenes de producto terminado.
+                Disponibilidad en tiempo real para los 4 almacenes de producto terminado.
               </p>
             </div>
           </div>
@@ -1181,11 +1525,11 @@
         <button class="modal-close-btn" onclick="closeModal('modal-approve')">✕</button>
       </div>
       <div class="modal-body">
-        <div id="modal-approve-info" style="margin-bottom:16px; font-size:0.88rem; color:var(--slate-600); line-height:1.4;"></div>
+        <div id="modal-approve-info" style="margin-bottom:16px; font-size:0.9rem; color:var(--slate-600); line-height:1.45; background:var(--slate-50); padding:12px; border-radius:12px; border:1px solid var(--slate-200);"></div>
         
-        <div class="form-group">
-          <label class="form-label">Confirmar o Reasignar Almacén</label>
-          <div class="chip-grid" id="modal-approve-wh-chips">
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:0.85rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">Confirmar o Reasignar Almacén de Carga</label>
+          <div class="chip-grid" id="modal-approve-wh-chips" style="margin-bottom:0;">
             <button class="chip-btn" onclick="selectModalWh('PT 08', this)">PT 08</button>
             <button class="chip-btn" onclick="selectModalWh('PT 09', this)">PT 09</button>
             <button class="chip-btn" onclick="selectModalWh('PT 15 BAHÍA', this)">PT 15 BAHÍA</button>
@@ -1193,9 +1537,9 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Nota de Despacho u Observación para Operario</label>
-          <textarea id="modal-approve-note" class="form-input" style="height:80px; resize:vertical;"></textarea>
+        <div>
+          <label style="display:block; font-size:0.85rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">Nota u Observación para Operario / Transportista</label>
+          <textarea id="modal-approve-note" class="form-input-search" style="padding:12px; height:84px; resize:vertical; font-size:0.88rem;"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -1213,10 +1557,10 @@
         <button class="modal-close-btn" onclick="closeModal('modal-reject')">✕</button>
       </div>
       <div class="modal-body">
-        <div id="modal-reject-info" style="margin-bottom:16px; font-size:0.88rem; color:var(--slate-600);"></div>
-        <div class="form-group">
-          <label class="form-label">Motivo de Rechazo</label>
-          <textarea id="modal-reject-reason" class="form-input" style="height:80px; resize:vertical;"></textarea>
+        <div id="modal-reject-info" style="margin-bottom:16px; font-size:0.9rem; color:var(--slate-600); background:var(--slate-50); padding:12px; border-radius:12px; border:1px solid var(--slate-200);"></div>
+        <div>
+          <label style="display:block; font-size:0.85rem; font-weight:800; color:var(--slate-800); margin-bottom:8px;">Motivo de Rechazo</label>
+          <textarea id="modal-reject-reason" class="form-input-search" style="padding:12px; height:84px; resize:vertical; font-size:0.88rem;"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -1237,14 +1581,14 @@
         <p style="font-size:0.88rem; color:var(--slate-600); margin-bottom:16px;">
           Ingresa el correo electrónico que registraste en tu primer ingreso para validar tu identidad.
         </p>
-        <div class="form-group">
-          <label class="form-label">Correo Registrado</label>
-          <input type="email" id="modal-recover-email" class="form-input" placeholder="tucorreo@sider.com.pe" />
+        <div>
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Correo Registrado</label>
+          <input type="email" id="modal-recover-email" class="form-input-search" style="padding-left:14px; font-size:0.92rem;" placeholder="correo@sider.com.pe" />
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('modal-recover')">Cancelar</button>
-        <button class="btn btn-primary" onclick="processPasswordRecovery()">Validar y Enviar Código</button>
+        <button class="btn btn-primary" onclick="processPasswordRecovery()">Validar Identidad</button>
       </div>
     </div>
   </div>
@@ -1283,6 +1627,10 @@
       almacen: 'PT 08',
       cantidad: 10
     };
+
+    function normalizeStr(str) {
+      return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
 
     // --- NAVIGATION & ROUTING ---
     function navigateToOperario() {
@@ -1333,7 +1681,7 @@
           `;
         } else {
           topbarActions.innerHTML = `
-            <span class="tag-badge tag-badge-active" style="padding:6px 12px; font-size:0.78rem;">SISTEMA EN LÍNEA</span>
+            <span class="tag-badge tag-badge-active" style="padding:6px 14px; font-size:0.8rem; box-shadow:var(--shadow-sm);">SISTEMA EN LÍNEA</span>
           `;
         }
       }
@@ -1372,33 +1720,36 @@
     // --- OPERARIO SEARCH & SELECTION ---
     function handleSearchOperario(query) {
       const box = document.getElementById('op-autocomplete');
-      const q = query.trim().toLowerCase();
+      const q = normalizeStr(query.trim());
       if (q.length < 2) {
         box.style.display = 'none';
         return;
       }
 
       const matches = USERS_DB.filter(u =>
-        u.short.toLowerCase().includes(q) ||
-        u.full.toLowerCase().includes(q) ||
-        u.ordered.toLowerCase().includes(q) ||
+        normalizeStr(u.short).includes(q) ||
+        normalizeStr(u.full).includes(q) ||
+        normalizeStr(u.ordered).includes(q) ||
         u.id.includes(q)
       ).slice(0, 10);
 
       if (matches.length === 0) {
-        box.innerHTML = '<div style="padding:14px; text-align:center; color:var(--slate-400); font-size:0.85rem;">No se encontraron colaboradores</div>';
+        box.innerHTML = '<div style="padding:16px; text-align:center; color:var(--slate-400); font-size:0.88rem;">No se encontraron colaboradores</div>';
         box.style.display = 'block';
         return;
       }
 
       box.innerHTML = matches.map(u => `
         <div class="autocomplete-item" onclick="selectOperarioCandidate('${u.id}')">
-          <div class="autocomplete-name">${u.short} <span style="font-weight:400; color:var(--slate-500); font-size:0.82rem;">(${u.full})</span></div>
-          <div class="autocomplete-meta">
-            <span class="tag-badge">ID SAP: ${u.id}</span>
-            <span class="tag-badge ${u.group.includes('ACTIVO') ? 'tag-badge-active' : ''}">${u.group}</span>
-            <span>${u.area}</span>
+          <div>
+            <div class="autocomplete-name">${u.short} <span style="font-weight:500; color:var(--slate-500); font-size:0.83rem;">(${u.full})</span></div>
+            <div class="autocomplete-meta">
+              <span class="tag-badge">ID SAP: ${u.id}</span>
+              <span class="tag-badge ${u.group.includes('ACTIVO') ? 'tag-badge-active' : ''}">${u.group}</span>
+              <span>${u.area}</span>
+            </div>
           </div>
+          <span style="color:var(--sider-orange-600); font-weight:800; font-size:0.85rem;">Elegir →</span>
         </div>
       `).join('');
       box.style.display = 'block';
@@ -1413,16 +1764,18 @@
       document.getElementById('op-search-input').value = `${user.short} (${user.full})`;
 
       const card = document.getElementById('op-selected-card');
-      card.style.display = 'block';
+      card.style.display = 'flex';
       card.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <div style="font-weight:800; color:var(--sider-orange-900); font-size:0.95rem;">${user.short}</div>
-            <div style="font-size:0.8rem; color:var(--slate-600); margin-top:2px;">${user.full}</div>
-            <div style="font-size:0.76rem; color:var(--slate-500); margin-top:4px;">ID SAP: <strong>${user.id}</strong> | Área: ${user.area} | ${user.group}</div>
+        <div>
+          <div style="font-weight:900; color:var(--sider-orange-950); font-size:1.05rem;">${user.short}</div>
+          <div style="font-size:0.84rem; color:var(--slate-600); margin-top:2px;">${user.full}</div>
+          <div style="font-size:0.78rem; color:var(--slate-500); margin-top:5px; display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="tag-badge">ID SAP: <strong>${user.id}</strong></span>
+            <span class="tag-badge">${user.area}</span>
+            <span class="tag-badge ${user.group.includes('ACTIVO') ? 'tag-badge-active' : ''}">${user.group}</span>
           </div>
-          <button class="btn btn-secondary btn-sm" onclick="clearSelectedCandidate()">Cambiar</button>
         </div>
+        <button class="btn btn-secondary btn-sm" onclick="clearSelectedCandidate()">Cambiar</button>
       `;
 
       const cred = savedCredentials[user.id];
@@ -1436,6 +1789,7 @@
         document.getElementById('op-first-time-box').style.display = 'none';
         document.getElementById('op-returning-box').style.display = 'block';
         document.getElementById('op-returning-pass').value = '';
+        document.getElementById('op-returning-pass').focus();
       }
     }
 
@@ -1463,7 +1817,7 @@
         return;
       }
       if (pass !== confirmPass) {
-        showToast('Error de Coincidencia', 'Las contraseñas no coinciden.', 'danger');
+        showToast('Error de Coincidencia', 'Las contraseñas no coinciden. Verifícalas.', 'danger');
         return;
       }
 
@@ -1488,6 +1842,8 @@
 
     function enterOperarioSession(user, email) {
       activeOperario = { ...user, email };
+      sessionStorage.setItem('sider_active_operario', JSON.stringify(activeOperario));
+
       document.getElementById('op-login-card').style.display = 'none';
       document.getElementById('op-dashboard').style.display = 'block';
 
@@ -1499,6 +1855,8 @@
     function logoutOperario() {
       activeOperario = null;
       selectedUserCandidate = null;
+      sessionStorage.removeItem('sider_active_operario');
+
       document.getElementById('op-login-card').style.display = 'block';
       document.getElementById('op-dashboard').style.display = 'none';
       clearSelectedCandidate();
@@ -1536,7 +1894,7 @@
       container.innerHTML = validItems.map(item => `
         <button class="chip-btn ${item.tipo === calcState.tipo ? 'selected' : ''}" onclick="selectTipo('${item.tipo}', '${item.codigo}')">
           <span>${item.tipo}</span>
-          <span class="chip-sap-preview">(${item.codigo})</span>
+          <span class="chip-sap-preview">${item.codigo}</span>
         </button>
       `).join('');
     }
@@ -1586,10 +1944,10 @@
       const indicator = document.getElementById('terminal-stock-indicator');
       if (hasItem) {
         indicator.className = 'stock-indicator stock-in';
-        indicator.innerHTML = `🟢 Medida activa en ${calcState.almacen}`;
+        indicator.innerHTML = `<span class="radar-dot"></span><span>Medida activa en ${calcState.almacen}</span>`;
       } else {
         indicator.className = 'stock-indicator stock-query';
-        indicator.innerHTML = `🟡 Sujeto a confirmación de stock en ${calcState.almacen}`;
+        indicator.innerHTML = `<span>🟡 Sujeto a confirmación de stock en ${calcState.almacen}</span>`;
       }
     }
 
@@ -1621,10 +1979,20 @@
       renderOperarioRequests();
 
       showToast(
-        'Solicitud Registrada',
-        `Solicitud ${newReq.id} enviada. Se notificó al Administrador para validar stock en ${newReq.almacen}.`,
+        'Solicitud Enviada con Éxito',
+        `Pedido ${newReq.id} registrado para carga en ${newReq.almacen}. Notificación enviada al Administrador.`,
         'success'
       );
+    }
+
+    function cancelOperarioRequest(id) {
+      const idx = requestsList.findIndex(r => r.id === id);
+      if (idx !== -1 && requestsList[idx].estado === 'PENDIENTE') {
+        requestsList.splice(idx, 1);
+        localStorage.setItem('sider_requests', JSON.stringify(requestsList));
+        renderOperarioRequests();
+        showToast('Solicitud Cancelada', 'La solicitud pendiente ha sido eliminada.', 'info');
+      }
     }
 
     function renderOperarioRequests() {
@@ -1634,7 +2002,7 @@
 
       const container = document.getElementById('op-my-requests-list');
       if (myReqs.length === 0) {
-        container.innerHTML = '<div style="padding:24px; text-align:center; color:var(--slate-400); font-size:0.88rem;">No tienes solicitudes enviadas aún.</div>';
+        container.innerHTML = '<div style="padding:28px; text-align:center; color:var(--slate-400); font-size:0.88rem;">No tienes solicitudes enviadas aún.</div>';
         return;
       }
 
@@ -1663,8 +2031,15 @@
             </div>
             ${r.comentarioAdmin ? `
               <div class="req-card-admin-note">
-                <strong>Instrucción de Despacho (enviada a ${r.email}):</strong><br>
+                <strong>Instrucción Oficial de Despacho (enviada a ${r.email}):</strong><br>
                 ${r.comentarioAdmin}
+              </div>
+            ` : ''}
+            ${r.estado === 'PENDIENTE' ? `
+              <div style="margin-top:10px; text-align:right;">
+                <button class="btn btn-secondary btn-sm" onclick="cancelOperarioRequest('${r.id}')" style="font-size:0.76rem; color:var(--slate-500);">
+                  Cancelar Solicitud
+                </button>
               </div>
             ` : ''}
           </div>
@@ -1723,7 +2098,7 @@
     function renderAdminTable() {
       const tbody = document.getElementById('admin-table-tbody');
       const searchBox = document.getElementById('admin-search-box');
-      const q = (searchBox ? searchBox.value.trim().toLowerCase() : '');
+      const q = (searchBox ? normalizeStr(searchBox.value.trim()) : '');
 
       let filtered = currentAdminFilter === 'TODOS'
         ? requestsList
@@ -1731,16 +2106,16 @@
 
       if (q) {
         filtered = filtered.filter(r =>
-          r.operarioNombre.toLowerCase().includes(q) ||
-          r.operarioFull.toLowerCase().includes(q) ||
+          normalizeStr(r.operarioNombre).includes(q) ||
+          normalizeStr(r.operarioFull).includes(q) ||
           r.codigoSap.includes(q) ||
-          r.medida.toLowerCase().includes(q) ||
-          r.id.toLowerCase().includes(q)
+          normalizeStr(r.medida).includes(q) ||
+          normalizeStr(r.id).includes(q)
         );
       }
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:24px; color:var(--slate-400);">No se encontraron solicitudes con este filtro.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:28px; color:var(--slate-400);">No se encontraron solicitudes con este filtro.</td></tr>';
         return;
       }
 
@@ -1823,7 +2198,7 @@
       renderAdminDashboard();
       if (activeOperario) renderOperarioRequests();
 
-      showToast('Solicitud Aprobada', `Se notificó por correo a ${req.email} y se actualizó el despacho en ${selectedModalWh}.`, 'success');
+      showToast('Solicitud Aprobada', `Se notificó por correo a ${req.email} y se autorizó el despacho en ${selectedModalWh}.`, 'success');
     }
 
     function openRejectModal(index) {
@@ -1865,21 +2240,21 @@
       container.innerHTML = warehouses.map(wh => {
         const items = warehouseStock[wh] || [];
         return `
-          <div style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:12px; padding:16px;">
-            <div style="font-weight:800; font-size:1rem; color:var(--slate-900); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:14px; padding:18px;">
+            <div style="font-weight:900; font-size:1.02rem; color:var(--slate-900); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
               <span>${wh}</span>
               <span class="tag-badge">${items.length} medidas</span>
             </div>
             <div style="min-height:90px; margin-bottom:12px;">
               ${items.map((m, idx) => `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid var(--slate-200); padding:6px 10px; border-radius:8px; margin-bottom:6px; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid var(--slate-200); padding:7px 12px; border-radius:8px; margin-bottom:6px; font-size:0.86rem; box-shadow:var(--shadow-sm);">
                   <span style="font-weight:700;">${m}</span>
                   <button onclick="removeWhItem('${wh}', ${idx})" style="background:none; border:none; color:var(--rose-500); font-weight:800; cursor:pointer;">✕</button>
                 </div>
               `).join('')}
             </div>
             <div style="display:flex; gap:6px;">
-              <input type="text" id="input-add-${wh}" class="form-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Ej: 5/8 x 12m" />
+              <input type="text" id="input-add-${wh}" class="form-input-search" style="padding:8px 12px; font-size:0.84rem;" placeholder="Ej: 5/8 x 12m" />
               <button class="btn btn-secondary btn-sm" onclick="addWhItem('${wh}')">+ Añadir</button>
             </div>
           </div>
@@ -1985,17 +2360,52 @@
       toast.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
           <strong style="color:#ffffff;">${title}</strong>
-          <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#94a3b8; cursor:pointer;">✕</button>
+          <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1rem;">✕</button>
         </div>
-        <div style="color:#cbd5e1; font-size:0.84rem; line-height:1.35;">${message}</div>
+        <div style="color:#cbd5e1; font-size:0.84rem; line-height:1.4;">${message}</div>
       `;
       container.appendChild(toast);
 
       setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
+        toast.style.transform = 'translateY(10px) scale(0.95)';
+        toast.style.transition = 'all 0.3s ease';
         setTimeout(() => toast.remove(), 300);
-      }, 5000);
+      }, 5500);
+    }
+
+    // CLICK-OUTSIDE & ESCAPE HANDLERS
+    document.addEventListener('click', (e) => {
+      const box = document.getElementById('op-autocomplete');
+      const input = document.getElementById('op-search-input');
+      if (box && input && !box.contains(e.target) && e.target !== input) {
+        box.style.display = 'none';
+      }
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('open');
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+        const box = document.getElementById('op-autocomplete');
+        if (box) box.style.display = 'none';
+      }
+    });
+
+    // --- RESTORE SESSION ON LOAD ---
+    const storedOp = sessionStorage.getItem('sider_active_operario');
+    if (storedOp) {
+      try {
+        const parsed = JSON.parse(storedOp);
+        enterOperarioSession(parsed, parsed.email);
+      } catch(e) {}
     }
 
     // --- INITIALIZATION ---

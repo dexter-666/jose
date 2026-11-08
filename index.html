@@ -1937,7 +1937,7 @@
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;">
                   <div>
                     <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--slate-600); margin-bottom:4px;">Service ID</label>
-                    <input type="text" id="email-cfg-service-id" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="service_xxxx" />
+                    <input type="text" id="email-cfg-service-id" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="service_xxxx" value="service_do2r7ve" />
                   </div>
                   <div>
                     <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--slate-600); margin-bottom:4px;">Template ID</label>
@@ -1945,7 +1945,7 @@
                   </div>
                   <div>
                     <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--slate-600); margin-bottom:4px;">Public Key (User ID)</label>
-                    <input type="text" id="email-cfg-public-key" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="public_xxxx" />
+                    <input type="text" id="email-cfg-public-key" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="public_xxxx" value="EctPt5eW3Ppdog1fZ" />
                   </div>
                 </div>
               </div>
@@ -2236,7 +2236,7 @@
     const DEFAULT_EMAIL_CONFIG = {
       adminEmail: "almacen.central@siderperu.com.pe",
       senderName: "SIDERPERU - Sistema de Notificaciones SAP",
-      service: "smtp",
+      service: "emailjs",
       notifyAdminOnNew: true,
       notifyOperarioOnAction: true,
       showPreviewOnAction: true,
@@ -2245,9 +2245,9 @@
       smtpService: "gmail",
       smtpHost: "smtp.gmail.com",
       smtpPort: 465,
-      serviceId: "",
+      serviceId: "service_do2r7ve",
       templateId: "",
-      publicKey: "",
+      publicKey: "EctPt5eW3Ppdog1fZ",
       resendKey: ""
     };
 
@@ -2272,7 +2272,9 @@
     let emailConfig = JSON.parse(localStorage.getItem('sider_email_config') || JSON.stringify(DEFAULT_EMAIL_CONFIG));
     if (!emailConfig.smtpUser) emailConfig.smtpUser = 'proyectofinal123.666@gmail.com';
     if (!emailConfig.adminEmail || emailConfig.adminEmail.includes('almacen.central')) emailConfig.adminEmail = 'proyectofinal123.666@gmail.com';
-    if (!emailConfig.service || emailConfig.service === 'local') emailConfig.service = 'smtp';
+    if (!emailConfig.serviceId) emailConfig.serviceId = 'service_do2r7ve';
+    if (!emailConfig.publicKey) emailConfig.publicKey = 'EctPt5eW3Ppdog1fZ';
+    emailConfig.service = 'emailjs';
 
     // ACTIVE SESSION STATE
     let activeOperario = null;
@@ -3811,9 +3813,9 @@ SIDERPERU S.A.A. - Planta Chimbote`;
       const servId = document.getElementById('email-cfg-service-id');
       const tplId = document.getElementById('email-cfg-template-id');
       const pubKey = document.getElementById('email-cfg-public-key');
-      if (servId) servId.value = emailConfig.serviceId || '';
+      if (servId) servId.value = emailConfig.serviceId || 'service_do2r7ve';
       if (tplId) tplId.value = emailConfig.templateId || '';
-      if (pubKey) pubKey.value = emailConfig.publicKey || '';
+      if (pubKey) pubKey.value = emailConfig.publicKey || 'EctPt5eW3Ppdog1fZ';
 
       const resendInp = document.getElementById('email-cfg-resend-key');
       if (resendInp) resendInp.value = emailConfig.resendKey || '';
@@ -3948,7 +3950,12 @@ SIDERPERU S.A.A. - Planta Chimbote`;
         }).catch(err => {
           showToast('Error de Conexión', err.message, 'danger');
         });
-      } else if (emailConfig.service === 'emailjs' && window.emailjs && emailConfig.publicKey && emailConfig.serviceId) {
+      } else if (emailConfig.service === 'emailjs') {
+        if (!emailConfig.templateId) {
+          showToast('Template ID Requerido', 'Ingresa tu Template ID de EmailJS (ej: template_xxxxxxx) en la casilla de configuración para despachar el correo real.', 'warning');
+          previewEmailModal(testReq.id, 'solicitud');
+          return;
+        }
         showToast('Enviando vía EmailJS...', `Despachando a ${emailConfig.adminEmail}...`, 'info');
         try {
           emailjs.init({ publicKey: emailConfig.publicKey });

@@ -4,8 +4,6 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/admin", "destination": "/index.html" },
-    { "source": "/pantalla-stock", "destination": "/index.html" },
-    { "source": "/tv", "destination": "/index.html" },
     { "source": "/operario", "destination": "/index.html" },
     { "source": "/api/usuarios", "destination": "/usuarios_sider.json" }
   ],
@@ -20,4 +18,3 @@
     }
   ]
 }
-

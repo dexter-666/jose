@@ -1,6 +1,6 @@
 /**
  * Servidor Web Local para el Sistema SIDER
- * Stock por Almacenes, Solicitudes y Monitor TV
+ * Stock por Almacenes y Solicitudes
  * Cero dependencias externas (Node.js nativo)
  */
 
@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Rutas Especiales
+  // Rutas de Aplicación
   if (pathname === '/' || pathname === '/index.html' || pathname === '/operario') {
     serveHtmlWithHash(res, 'operario');
     return;
@@ -33,11 +33,6 @@ const server = http.createServer((req, res) => {
 
   if (pathname === '/admin') {
     serveHtmlWithHash(res, 'admin');
-    return;
-  }
-
-  if (pathname === '/pantalla-stock' || pathname === '/tv') {
-    serveHtmlWithHash(res, 'tv');
     return;
   }
 
@@ -90,22 +85,15 @@ const server = http.createServer((req, res) => {
 });
 
 function serveHtmlWithHash(res, defaultHash) {
-  const htmlPath = path.join(BASE_DIR, 'sistema_stock_sider.html');
+  const htmlPath = path.join(BASE_DIR, 'index.html');
   fs.readFile(htmlPath, 'utf8', (err, html) => {
     if (err) {
       res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('Error al leer el archivo HTML: ' + err.message);
       return;
     }
-    // Si la ruta solicitada es /admin o /pantalla-stock, inyectamos el script para autoseleccionar la pestaña
-    const injected = html.replace('// Check URL route/hash on initial load', `
-    if (!window.location.hash) {
-      window.location.hash = '${defaultHash}';
-    }
-    // Check URL route/hash on initial load`);
-
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(injected);
+    res.end(html);
   });
 }
 
@@ -130,14 +118,13 @@ function serveJsonFile(res, filePath, extractor) {
 
 server.listen(PORT, () => {
   console.log('================================================================');
-  console.log('🚀 SISTEMA SIDER - STOCK POR ALMACENES Y SOLICITUDES');
+  console.log('🚀 SISTEMA SIDER - SOLICITUDES Y STOCK');
   console.log('================================================================');
   console.log(`📡 Servidor activo en: http://localhost:${PORT}`);
   console.log('');
   console.log('📍 MÓDULOS DISPONIBLES:');
-  console.log(`   1. Portal Operario (Calculadora): http://localhost:${PORT}/`);
-  console.log(`   2. Panel Administrador (/admin): http://localhost:${PORT}/admin`);
-  console.log(`   3. Pantalla TV en Vivo:          http://localhost:${PORT}/pantalla-stock`);
+  console.log(`   1. Portal Operario:              http://localhost:${PORT}/`);
+  console.log(`   2. Módulo Administrador Oculto:  http://localhost:${PORT}/admin`);
   console.log('');
   console.log('🔌 APIS REST DISPONIBLES:');
   console.log(`   - Usuarios (1,093 registros):     http://localhost:${PORT}/api/usuarios`);
@@ -145,4 +132,3 @@ server.listen(PORT, () => {
   console.log(`   - Stock por Almacenes:           http://localhost:${PORT}/api/stock`);
   console.log('================================================================');
 });
-

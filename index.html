@@ -2465,19 +2465,11 @@
         <button class="btn btn-secondary btn-sm" onclick="clearSelectedCandidate()">Cambiar</button>
       `;
 
+      // Acceso directo — sin contraseña requerida
+      // Usar email guardado si existe, si no usar el del registro de usuarios
       const cred = savedCredentials[user.id];
-      if (!cred || !cred.password) {
-        document.getElementById('op-first-time-box').style.display = 'block';
-        document.getElementById('op-returning-box').style.display = 'none';
-        document.getElementById('op-first-email').value = user.email || '';
-        document.getElementById('op-first-pass').value = '';
-        document.getElementById('op-first-pass-confirm').value = '';
-      } else {
-        document.getElementById('op-first-time-box').style.display = 'none';
-        document.getElementById('op-returning-box').style.display = 'block';
-        document.getElementById('op-returning-pass').value = '';
-        document.getElementById('op-returning-pass').focus();
-      }
+      const emailToUse = (cred && cred.email) ? cred.email : (user.email || 'operario@sider.com.pe');
+      enterOperarioSession(user, emailToUse);
     }
 
     function clearSelectedCandidate() {
@@ -4052,29 +4044,38 @@ SIDERPERU S.A.A. - Planta Chimbote`;
       }
     });
 
-    // --- RESTORE SESSION ON LOAD ---
-    const storedOp = sessionStorage.getItem('sider_active_operario');
-    if (storedOp) {
-      try {
-        const parsed = JSON.parse(storedOp);
-        enterOperarioSession(parsed, parsed.email);
-      } catch(e) {}
-    }
-
     // --- INITIALIZATION ---
-    // Guard: wait for DOM elements before routing
     function initApp() {
       const adminView = document.getElementById('view-admin');
       const operarioView = document.getElementById('view-operario');
       const topbarActions = document.getElementById('topbar-actions');
       if (!adminView || !operarioView || !topbarActions) {
-        // DOM not ready yet, retry
         setTimeout(initApp, 50);
         return;
       }
-      handleHashChange();
+
+      // Detect if URL is admin-bound BEFORE restoring operario session
+      const hash = (window.location.hash || '').replace('#', '').toLowerCase();
+      const path = (window.location.pathname || '').toLowerCase();
+      const search = (window.location.search || '').toLowerCase();
+      const isAdminURL = path.includes('admin') || hash === 'admin' || hash.startsWith('admin') || search.includes('admin');
+
+      if (isAdminURL) {
+        // Go straight to admin — ignore any stored operario session
+        renderRoute('admin');
+      } else {
+        // --- RESTORE OPERARIO SESSION ---
+        const storedOp = sessionStorage.getItem('sider_active_operario');
+        if (storedOp) {
+          try {
+            const parsed = JSON.parse(storedOp);
+            enterOperarioSession(parsed, parsed.email);
+          } catch(e) {}
+        }
+        handleHashChange();
+      }
     }
-    // Run as soon as possible
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initApp);
     } else {

@@ -5,7 +5,8 @@
   "rewrites": [
     { "source": "/admin", "destination": "/index.html" },
     { "source": "/operario", "destination": "/index.html" },
-    { "source": "/api/usuarios", "destination": "/usuarios_sider.json" }
+    { "source": "/api/usuarios", "destination": "/usuarios_sider.json" },
+    { "source": "/api/send-email", "destination": "/api/send-email.js" }
   ],
   "headers": [
     {

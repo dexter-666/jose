@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/pantalla-stock", "destination": "/index.html" },
+    { "source": "/tv", "destination": "/index.html" },
+    { "source": "/operario", "destination": "/index.html" },
+    { "source": "/api/usuarios", "destination": "/usuarios_sider.json" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+      ]
+    }
+  ]
+}

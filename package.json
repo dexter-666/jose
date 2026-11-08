@@ -1,0 +1,21 @@
+{
+  "name": "sistema-stock-sider",
+  "version": "1.0.0",
+  "description": "Sistema de Solicitudes y Stock por Almacenes SIDER (Portal Operario, Panel Administrador y Pantalla TV)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "open": "cmd /c start sistema_stock_sider.html"
+  },
+  "keywords": [
+    "sider",
+    "stock",
+    "almacenes",
+    "sap",
+    "convertidor"
+  ],
+  "author": "SIDERPERU",
+  "license": "ISC"
+}
+

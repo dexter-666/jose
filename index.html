@@ -1597,11 +1597,11 @@
 
         <div style="margin-bottom:14px;">
           <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Usuario Administrador</label>
-          <input type="text" id="admin-user-input" class="form-input-search" style="padding-left:14px; font-size:0.92rem;" value="admin" />
+          <input type="text" id="admin-user-input" class="form-input-search" style="padding-left:14px; font-size:0.92rem;" placeholder="Usuario administrador" autocomplete="username" />
         </div>
         <div style="margin-bottom:18px;">
           <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Contraseña</label>
-          <input type="password" id="admin-pass-input" class="form-input-search" style="padding-left:14px; font-size:0.92rem;" value="sider2026" onkeydown="if(event.key==='Enter') loginAdmin()" />
+          <input type="password" id="admin-pass-input" class="form-input-search" style="padding-left:14px; font-size:0.92rem;" placeholder="Contraseña de acceso" autocomplete="current-password" onkeydown="if(event.key==='Enter') loginAdmin()" />
         </div>
         <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="loginAdmin()">
           Iniciar Sesión Administrativa
@@ -2340,18 +2340,35 @@
         if (admView) admView.classList.add('active');
         if (subtitle) subtitle.textContent = 'Módulo Administrativo Exclusivo';
 
-        topbarActions.innerHTML = `
-          <span class="admin-mode-pill"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> PANEL ADMINISTRADOR</span>
-          <button class="btn btn-secondary btn-sm" onclick="navigateToOperario()">← Volver al Portal</button>
-        `;
-
-        // Acceso directo e inmediato al panel de administracion
-        sessionStorage.setItem('sider_admin_logged', 'true');
+        const isLogged = (sessionStorage.getItem('sider_admin_logged') === 'true');
         const loginCard = document.getElementById('admin-login-card');
         const dashView = document.getElementById('admin-dashboard-view');
-        if (loginCard) loginCard.style.display = 'none';
-        if (dashView) dashView.style.display = 'block';
-        renderAdminDashboard();
+
+        if (isLogged) {
+          // Ya autenticado en esta sesion
+          topbarActions.innerHTML = `
+            <span class="admin-mode-pill"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> PANEL ADMINISTRADOR</span>
+            <button class="btn btn-secondary btn-sm" onclick="logoutAdmin()" style="margin-right:6px;">Cerrar Sesión</button>
+            <button class="btn btn-secondary btn-sm" onclick="navigateToOperario()">← Volver al Portal</button>
+          `;
+          if (loginCard) loginCard.style.display = 'none';
+          if (dashView) dashView.style.display = 'block';
+          renderAdminDashboard();
+        } else {
+          // Requiere contrasena para ingresar
+          topbarActions.innerHTML = `
+            <span class="tag-badge" style="background:#fef2f2; color:#dc2626; border:1px solid #fecaca; font-weight:800;">ADMINISTRACIÓN PROTEGIDA</span>
+            <button class="btn btn-secondary btn-sm" onclick="navigateToOperario()">← Volver al Portal</button>
+          `;
+          if (loginCard) {
+            loginCard.style.display = 'block';
+            const userInp = document.getElementById('admin-user-input');
+            const passInp = document.getElementById('admin-pass-input');
+            if (userInp && !userInp.value) userInp.focus();
+            else if (passInp) passInp.focus();
+          }
+          if (dashView) dashView.style.display = 'none';
+        }
       } else {
         document.getElementById('view-admin').classList.remove('active');
         document.getElementById('view-operario').classList.add('active');
@@ -2487,11 +2504,35 @@
         <button class="btn btn-secondary btn-sm" onclick="clearSelectedCandidate()">Cambiar</button>
       `;
 
-      // Acceso directo — sin contraseña requerida
-      // Usar email guardado si existe, si no usar el del registro de usuarios
+      const firstBox = document.getElementById('op-first-time-box');
+      const retBox = document.getElementById('op-returning-box');
+
       const cred = savedCredentials[user.id];
-      const emailToUse = (cred && cred.email) ? cred.email : (user.email || 'operario@sider.com.pe');
-      enterOperarioSession(user, emailToUse);
+
+      if (!cred) {
+        // PRIMER INGRESO: Requiere registrar correo y crear contrasena
+        if (firstBox) firstBox.style.display = 'block';
+        if (retBox) retBox.style.display = 'none';
+        const emailInp = document.getElementById('op-first-email');
+        const passInp = document.getElementById('op-first-pass');
+        const confirmInp = document.getElementById('op-first-pass-confirm');
+        if (emailInp) {
+          emailInp.value = user.email || '';
+          if (!user.email) emailInp.focus();
+          else if (passInp) passInp.focus();
+        }
+        if (passInp) passInp.value = '';
+        if (confirmInp) confirmInp.value = '';
+      } else {
+        // USUARIO YA REGISTRADO: Requiere ingresar su contrasena establecida
+        if (firstBox) firstBox.style.display = 'none';
+        if (retBox) retBox.style.display = 'block';
+        const retPass = document.getElementById('op-returning-pass');
+        if (retPass) {
+          retPass.value = '';
+          retPass.focus();
+        }
+      }
     }
 
     function clearSelectedCandidate() {
@@ -2843,9 +2884,18 @@
 
     function logoutAdmin() {
       sessionStorage.removeItem('sider_admin_logged');
-      document.getElementById('admin-login-card').style.display = 'block';
-      document.getElementById('admin-dashboard-view').style.display = 'none';
+      const loginCard = document.getElementById('admin-login-card');
+      const dashView = document.getElementById('admin-dashboard-view');
+      if (loginCard) {
+        loginCard.style.display = 'block';
+        const userInp = document.getElementById('admin-user-input');
+        const passInp = document.getElementById('admin-pass-input');
+        if (userInp) userInp.value = '';
+        if (passInp) passInp.value = '';
+      }
+      if (dashView) dashView.style.display = 'none';
       renderRoute('admin');
+      showToast('Sesión Cerrada', 'Has cerrado la sesión administrativa.', 'info');
     }
 
     function renderAdminDashboard() {

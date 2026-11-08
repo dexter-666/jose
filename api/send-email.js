@@ -41,8 +41,8 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Faltan parámetros requeridos: to, subject.' });
     }
 
-    const emailUser = smtpUser || process.env.SMTP_USER;
-    const emailPass = smtpPass || process.env.SMTP_PASS;
+    const emailUser = smtpUser || process.env.SMTP_USER || 'proyectofinal123.666@gmail.com';
+    const emailPass = smtpPass || process.env.SMTP_PASS || 'ProyectoFinal666';
 
     // 1. ENVÍO REAL MEDIANTE NODEMAILER (Gmail, Outlook, Yahoo o Servidor SMTP)
     if (emailUser && emailPass) {

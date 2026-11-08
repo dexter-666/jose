@@ -1833,6 +1833,24 @@
 
         <!-- TAB 4: CONFIGURACIÓN DE CORREO -->
         <div id="pane-email" class="admin-tab-pane">
+
+          <!-- BANNER DEL CIRCUITO DE CORREO OFICIAL -->
+          <div style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius:14px; padding:20px 24px; margin-bottom:24px; color:#ffffff; border-left:5px solid #ea580c; box-shadow:var(--shadow-md);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+              <span style="font-size:0.75rem; font-weight:800; letter-spacing:1px; color:#fdba74; text-transform:uppercase;">ARQUITECTURA DE ENLACE DE CORREO SIDERPERU</span>
+              <span class="tag-badge" style="background:rgba(234,88,12,0.25); color:#fdba74; border:1px solid #ea580c; font-size:0.75rem;">EMISOR OFICIAL: proyectofinal123.666@gmail.com</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; font-size:0.84rem; line-height:1.5;">
+              <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px;">
+                <strong style="color:#fdba74; display:block; margin-bottom:4px;">1. Nueva Solicitud (Operario -> Admin):</strong>
+                El correo emisor <code>proyectofinal123.666@gmail.com</code> despacha la solicitud de varillas al correo que especifiques en la casilla <em>"Correo Receptor del Administrador"</em> abajo.
+              </div>
+              <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px;">
+                <strong style="color:#fdba74; display:block; margin-bottom:4px;">2. Resolución (Admin -> Operario):</strong>
+                Al aprobar o rechazar la solicitud en la bandeja, el sistema usa <code>proyectofinal123.666@gmail.com</code> para notificar la resolución directamente al correo que el operario registró en su primer ingreso.
+              </div>
+            </div>
+          </div>
           <div class="card" style="margin-bottom:24px;">
             <div class="card-header">
               <div>
@@ -3698,15 +3716,24 @@ SIDERPERU S.A.A. - Planta Chimbote`;
           emailjs.init({ publicKey: emailConfig.publicKey });
           emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
             to_email: toEmail,
-            to_name: (isRequest ? 'Administrador Central' : req.operarioNombre),
+            to_name: (isRequest ? 'Administrador Central de Almacenes' : req.operarioNombre),
+            from_name: 'SIDERPERU - Sistema de Notificaciones SAP',
+            from_email: 'proyectofinal123.666@gmail.com',
+            sender_email: 'proyectofinal123.666@gmail.com',
+            reply_to: 'proyectofinal123.666@gmail.com',
             subject: subject,
             message_html: html,
             message_text: text,
             req_id: req.id,
+            estado: req.estado,
             material: req.medida,
             cantidad: req.cantidad,
             almacen: req.almacen,
-            codigo_sap: req.codigoSap
+            codigo_sap: req.codigoSap,
+            operario_nombre: req.operarioNombre,
+            operario_email: req.email,
+            admin_email: emailConfig.adminEmail,
+            comentario_admin: req.comentarioAdmin || ''
           }).then(res => {
             console.log('Notificación EmailJS despachada:', res);
           }).catch(err => {

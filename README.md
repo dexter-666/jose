@@ -114,3 +114,4 @@ Abre en tu navegador:
 
 - **Administrador:** Usuario `admin` \| Contraseña `sider2026`
 - **Operario de prueba:** Escribe `Carlos Ulloa` en el buscador, selecciónalo, define tu contraseña y correo de prueba.
+

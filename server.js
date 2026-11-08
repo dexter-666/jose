@@ -11,6 +11,23 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const BASE_DIR = __dirname;
 
+// Carga nativa de variables desde .env si existe localmente
+const envPath = path.join(BASE_DIR, '.env');
+if (fs.existsSync(envPath)) {
+  try {
+    const envLines = fs.readFileSync(envPath, 'utf8').split('\n');
+    envLines.forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+        const idx = trimmed.indexOf('=');
+        const k = trimmed.slice(0, idx).trim();
+        const v = trimmed.slice(idx + 1).trim();
+        if (!process.env[k]) process.env[k] = v;
+      }
+    });
+  } catch (e) {}
+}
+
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname;

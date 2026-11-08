@@ -1629,7 +1629,7 @@
           </button>
           <button class="admin-tab-btn" id="tab-btn-warehouses" onclick="switchAdminTab('warehouses')">
             <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span>Medidas por Almacén</span>
+            <span>Medidas y Materiales por Almacén</span>
           </button>
           <button class="admin-tab-btn" id="tab-btn-email" onclick="switchAdminTab('email')">
             <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -1849,7 +1849,7 @@
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:20px;">
               <div>
                 <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--slate-700); margin-bottom:6px;">Correo Receptor del Administrador / Almacén Central</label>
-                <input type="email" id="email-cfg-admin" class="form-input-search" style="padding:10px 14px; font-size:0.9rem;" placeholder="almacen.central@siderperu.com.pe" />
+                <input type="email" id="email-cfg-admin" class="form-input-search" style="padding:10px 14px; font-size:0.9rem;" placeholder="proyectofinal123.666@gmail.com" value="proyectofinal123.666@gmail.com" />
                 <span style="font-size:0.75rem; color:var(--slate-500); margin-top:4px; display:block;">Aquí se envían las alertas de nuevas solicitudes de los operarios.</span>
               </div>
 
@@ -1882,11 +1882,11 @@
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:12px;">
                   <div>
                     <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--slate-600); margin-bottom:4px;">Correo Emisor (Cuenta de Envío)</label>
-                    <input type="email" id="email-cfg-smtp-user" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="ejemplo@gmail.com o empresa@outlook.com" />
+                    <input type="email" id="email-cfg-smtp-user" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="proyectofinal123.666@gmail.com" value="proyectofinal123.666@gmail.com" />
                   </div>
                   <div>
                     <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--slate-600); margin-bottom:4px;">Contraseña o Clave de Aplicación</label>
-                    <input type="password" id="email-cfg-smtp-pass" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="••••••••••••••••" />
+                    <input type="password" id="email-cfg-smtp-pass" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="••••••••••••••••" value="ProyectoFinal666" />
                   </div>
                   <div>
                     <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--slate-600); margin-bottom:4px;">Proveedor de Correo</label>
@@ -1907,8 +1907,15 @@
                     <input type="number" id="email-cfg-smtp-port" class="form-input-search" style="padding:8px 12px; font-size:0.86rem;" placeholder="465" />
                   </div>
                 </div>
-                <div style="font-size:0.75rem; color:var(--slate-500); margin-top:8px;">
-                  Nota para Gmail: Utiliza una <strong>Contraseña de Aplicación</strong> de 16 caracteres generada desde tu cuenta de Google (Seguridad -> Verificación en 2 pasos -> Contraseñas de aplicaciones).
+                <div style="background:#eff6ff; border:1px solid #bfdbfe; border-left:4px solid #3b82f6; border-radius:10px; padding:12px 14px; margin-top:12px; font-size:0.8rem; color:#1e40af; line-height:1.45;">
+                  <strong style="display:block; margin-bottom:4px; font-weight:800;">Guía Oficial para Google Gmail (proyectofinal123.666@gmail.com):</strong>
+                  Google exige por seguridad una <strong>Contraseña de Aplicación</strong> de 16 caracteres para envíos SMTP externos (en lugar de la contraseña estándar). Si obtienes error de credenciales:
+                  <ol style="margin:6px 0 0 18px; padding:0;">
+                    <li>Entra a <strong>myaccount.google.com/security</strong> y activa la Verificación en 2 pasos si no lo está.</li>
+                    <li>Entra a <strong>myaccount.google.com/apppasswords</strong>.</li>
+                    <li>Escribe de nombre <code>SIDERPERU</code> y haz clic en <strong>Crear</strong>.</li>
+                    <li>Copia el código amarillo de 16 letras y pégalo en la casilla de contraseña arriba.</li>
+                  </ol>
                 </div>
               </div>
 
@@ -2251,7 +2258,11 @@
     let savedCredentials = JSON.parse(localStorage.getItem('sider_credentials') || '{}');
     let requestsList = JSON.parse(localStorage.getItem('sider_requests') || '[]');
     let warehouseStock = JSON.parse(localStorage.getItem('sider_wh_stock') || JSON.stringify(INITIAL_STOCK));
+    let warehouseTypes = JSON.parse(localStorage.getItem('sider_wh_types') || JSON.stringify(INITIAL_WH_TYPES));
     let emailConfig = JSON.parse(localStorage.getItem('sider_email_config') || JSON.stringify(DEFAULT_EMAIL_CONFIG));
+    if (!emailConfig.smtpUser) emailConfig.smtpUser = 'proyectofinal123.666@gmail.com';
+    if (!emailConfig.adminEmail || emailConfig.adminEmail.includes('almacen.central')) emailConfig.adminEmail = 'proyectofinal123.666@gmail.com';
+    if (!emailConfig.service || emailConfig.service === 'local') emailConfig.service = 'smtp';
 
     // ACTIVE SESSION STATE
     let activeOperario = null;
@@ -2617,14 +2628,26 @@
       document.getElementById('terminal-qty-text').textContent = `Cantidad: ${calcState.cantidad} unid · Peso Est: ${totalKg.toLocaleString()} kg (${totalTn} TN)`;
 
       const whItems = warehouseStock[calcState.almacen] || [];
-      const hasItem = whItems.some(i => i.replace(/\s+/g, '').toLowerCase().includes(calcState.diametro.replace('"', '').toLowerCase()));
+      const whTypes = (warehouseTypes && warehouseTypes[calcState.almacen]) ? warehouseTypes[calcState.almacen] : ['Nacional', 'Importado', 'Fecoxi', 'FM'];
+
+      const hasMedida = whItems.some(i => i.replace(/\s+/g, '').toLowerCase().includes(calcState.diametro.replace('"', '').toLowerCase()));
+      const hasTipo = whTypes.some(t => t.trim().toLowerCase() === calcState.tipo.trim().toLowerCase());
       const indicator = document.getElementById('terminal-stock-indicator');
-      if (hasItem) {
-        indicator.className = 'stock-indicator stock-in';
-        indicator.innerHTML = `<span class="radar-dot"></span><span>Medida activa en ${calcState.almacen}</span>`;
-      } else {
-        indicator.className = 'stock-indicator stock-query';
-        indicator.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:4px;"></span><span>Sujeto a confirmación de stock en ${calcState.almacen}</span>`;
+
+      if (indicator) {
+        if (hasMedida && hasTipo) {
+          indicator.className = 'stock-indicator stock-in';
+          indicator.innerHTML = `<span class="radar-dot"></span><span>Medida y Material (${calcState.tipo}) activos en ${calcState.almacen}</span>`;
+        } else if (hasMedida && !hasTipo) {
+          indicator.className = 'stock-indicator stock-query';
+          indicator.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:4px;"></span><span>Medida disponible, pero tipo '${calcState.tipo}' sujeto a verificación en ${calcState.almacen}</span>`;
+        } else if (!hasMedida && hasTipo) {
+          indicator.className = 'stock-indicator stock-query';
+          indicator.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:4px;"></span><span>Material activo, pero medida '${calcState.diametro}' sujeta a confirmación en ${calcState.almacen}</span>`;
+        } else {
+          indicator.className = 'stock-indicator stock-query';
+          indicator.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:4px;"></span><span>Sujeto a confirmación de stock en ${calcState.almacen}</span>`;
+        }
       }
     }
 
@@ -3167,30 +3190,73 @@
       showToast('Material Eliminado', `Se removió el código SAP ${code} del catálogo.`, 'info');
     }
 
-    // --- WAREHOUSE STOCK MANAGER ---
+    // --- WAREHOUSE STOCK MANAGER (MEDIDAS Y MATERIALES / TIPOS) ---
     function renderAdminStockManager() {
       const container = document.getElementById('admin-stock-grid');
+      if (!container) return;
       const warehouses = ['PT 08', 'PT 09', 'PT 15 BAHÍA', 'PT15 CURVA'];
+      const allCatalogTypes = [...new Set(catalogDB.map(c => c.tipo))];
 
       container.innerHTML = warehouses.map(wh => {
         const items = warehouseStock[wh] || [];
+        const types = warehouseTypes[wh] || [];
+
         return `
-          <div style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:14px; padding:18px;">
-            <div style="font-weight:900; font-size:1.02rem; color:var(--slate-900); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-              <span>${wh}</span>
-              <span class="tag-badge">${items.length} medidas</span>
-            </div>
-            <div style="min-height:90px; margin-bottom:12px;">
-              ${items.map((m, idx) => `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid var(--slate-200); padding:7px 12px; border-radius:8px; margin-bottom:6px; font-size:0.86rem; box-shadow:var(--shadow-sm);">
-                  <span style="font-weight:700;">${m}</span>
-                  <button onclick="removeWhItem('${wh}', ${idx})" style="background:none; border:none; color:var(--rose-500); cursor:pointer; display:flex; align-items:center;"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          <div style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:14px; padding:18px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-weight:900; font-size:1.05rem; color:var(--slate-900); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-200); padding-bottom:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--sider-orange-600)" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <span>${wh}</span>
                 </div>
-              `).join('')}
-            </div>
-            <div style="display:flex; gap:6px;">
-              <input type="text" id="input-add-${wh}" class="form-input-search" style="padding:8px 12px; font-size:0.84rem;" placeholder="Ej: 5/8 x 12m" />
-              <button class="btn btn-secondary btn-sm" onclick="addWhItem('${wh}')">+ Añadir</button>
+                <div style="display:flex; gap:6px;">
+                  <span class="tag-badge" style="font-size:0.75rem;">${items.length} medidas</span>
+                  <span class="tag-badge" style="background:var(--sider-orange-50); color:var(--sider-orange-800); border:1px solid var(--sider-orange-200); font-size:0.75rem;">${types.length} materiales</span>
+                </div>
+              </div>
+
+              <!-- 1. Medidas Activas -->
+              <div style="margin-bottom:18px;">
+                <div style="font-size:0.8rem; font-weight:800; color:var(--slate-700); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; display:flex; justify-content:space-between;">
+                  <span>1. Medidas de Barra en Stock</span>
+                  <span style="font-size:0.72rem; color:var(--slate-400); font-weight:600;">(Diámetro x Largo)</span>
+                </div>
+                <div style="min-height:75px; max-height:160px; overflow-y:auto; margin-bottom:10px; padding-right:4px;">
+                  ${items.length === 0 ? '<div style="font-size:0.8rem; color:var(--slate-400); font-style:italic; padding:8px 0;">Sin medidas registradas</div>' : items.map((m, idx) => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid var(--slate-200); padding:6px 12px; border-radius:8px; margin-bottom:6px; font-size:0.84rem; box-shadow:var(--shadow-sm);">
+                      <span style="font-weight:700; color:var(--slate-800);">${m}</span>
+                      <button onclick="removeWhItem('${wh}', ${idx})" title="Eliminar medida" style="background:none; border:none; color:var(--rose-500); cursor:pointer; display:flex; align-items:center; padding:2px;"><svg class="icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                    </div>
+                  `).join('')}
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="input-add-${wh}" class="form-input-search" style="padding:7px 10px; font-size:0.82rem;" placeholder="Ej: 5/8 x 12m, 3/8 x 9m..." />
+                  <button class="btn btn-secondary btn-sm" onclick="addWhItem('${wh}')" style="font-size:0.8rem; padding:6px 10px;">+ Medida</button>
+                </div>
+              </div>
+
+              <!-- 2. Tipos / Materiales Autorizados -->
+              <div style="margin-bottom:10px;">
+                <div style="font-size:0.8rem; font-weight:800; color:var(--slate-700); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; display:flex; justify-content:space-between;">
+                  <span>2. Materiales / Procedencias Autorizadas</span>
+                  <span style="font-size:0.72rem; color:var(--slate-400); font-weight:600;">(Clic para alternar)</span>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+                  ${allCatalogTypes.map(t => {
+                    const isActive = types.includes(t);
+                    return `
+                      <button type="button" onclick="toggleWhType('${wh}', '${t}')" class="chip-btn ${isActive ? 'selected' : ''}" style="font-size:0.76rem; padding:5px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
+                        <svg class="icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" style="display:${isActive ? 'block' : 'none'};"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>${t}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="input-add-type-${wh}" class="form-input-search" style="padding:7px 10px; font-size:0.82rem;" placeholder="Nuevo Tipo (ej: FM, Grado 60)..." />
+                  <button class="btn btn-secondary btn-sm" onclick="addCustomWhType('${wh}')" style="font-size:0.8rem; padding:6px 10px;">+ Tipo</button>
+                </div>
+              </div>
             </div>
           </div>
         `;
@@ -3213,6 +3279,37 @@
       localStorage.setItem('sider_wh_stock', JSON.stringify(warehouseStock));
       renderAdminStockManager();
       updateCalculatorView();
+      showToast('Medida Registrada', `${val} añadida a ${wh}.`, 'success');
+    }
+
+    function toggleWhType(wh, tipo) {
+      if (!warehouseTypes[wh]) warehouseTypes[wh] = [];
+      const idx = warehouseTypes[wh].indexOf(tipo);
+      if (idx >= 0) {
+        warehouseTypes[wh].splice(idx, 1);
+      } else {
+        warehouseTypes[wh].push(tipo);
+      }
+      localStorage.setItem('sider_wh_types', JSON.stringify(warehouseTypes));
+      renderAdminStockManager();
+      updateCalculatorView();
+      showToast('Almacén Actualizado', `${wh}: Material '${tipo}' ${idx >= 0 ? 'desactivado' : 'activado'}.`, 'info');
+    }
+
+    function addCustomWhType(wh) {
+      const inp = document.getElementById('input-add-type-' + wh);
+      if (!inp) return;
+      const val = inp.value.trim();
+      if (!val) return;
+      if (!warehouseTypes[wh]) warehouseTypes[wh] = [];
+      if (!warehouseTypes[wh].includes(val)) {
+        warehouseTypes[wh].push(val);
+        localStorage.setItem('sider_wh_types', JSON.stringify(warehouseTypes));
+      }
+      inp.value = '';
+      renderAdminStockManager();
+      updateCalculatorView();
+      showToast('Tipo Agregado', `Nuevo material '${val}' asignado a ${wh}.`, 'success');
     }
 
     function exportAdminCSV() {
@@ -3658,7 +3755,7 @@ SIDERPERU S.A.A. - Planta Chimbote`;
       const notifyOperario = document.getElementById('email-cfg-notify-operario');
       const showPrev = document.getElementById('email-cfg-show-preview');
 
-      if (adminInp) adminInp.value = emailConfig.adminEmail || 'almacen.central@siderperu.com.pe';
+      if (adminInp) adminInp.value = emailConfig.adminEmail || 'proyectofinal123.666@gmail.com';
       if (senderInp) senderInp.value = emailConfig.senderName || 'SIDERPERU - Sistema de Notificaciones SAP';
       if (servSelect) servSelect.value = emailConfig.service || 'smtp';
       if (notifyAdmin) notifyAdmin.checked = (emailConfig.notifyAdminOnNew !== false);
@@ -3671,8 +3768,8 @@ SIDERPERU S.A.A. - Planta Chimbote`;
       const smtpHostInp = document.getElementById('email-cfg-smtp-host');
       const smtpPortInp = document.getElementById('email-cfg-smtp-port');
 
-      if (smtpUserInp) smtpUserInp.value = emailConfig.smtpUser || '';
-      if (smtpPassInp) smtpPassInp.value = emailConfig.smtpPass || '';
+      if (smtpUserInp) smtpUserInp.value = emailConfig.smtpUser || 'proyectofinal123.666@gmail.com';
+      if (smtpPassInp) smtpPassInp.value = emailConfig.smtpPass || 'ProyectoFinal666';
       if (smtpServSelect) smtpServSelect.value = emailConfig.smtpService || 'gmail';
       if (smtpHostInp) smtpHostInp.value = emailConfig.smtpHost || 'smtp.gmail.com';
       if (smtpPortInp) smtpPortInp.value = emailConfig.smtpPort || 465;
@@ -3794,11 +3891,39 @@ SIDERPERU S.A.A. - Planta Chimbote`;
           if (res.success) {
             showToast('¡Correo Real Enviado!', `Mensaje entregado exitosamente a ${emailConfig.adminEmail} desde ${emailConfig.smtpUser}.`, 'success');
           } else {
-            showToast('Fallo de Envío SMTP', res.message || res.error || 'Verifica correo y contraseña.', 'danger');
+            const errStr = (res.message || res.error || '');
+            if (errStr.includes('BadCredentials') || errStr.includes('535') || errStr.includes('Username and Password not accepted')) {
+              showToast('Clave de Aplicación Requerida', 'Google no acepta contraseñas normales para SMTP. Genera tu Contraseña de Aplicación de 16 caracteres en myaccount.google.com/apppasswords y pégala en Contraseña.', 'warning');
+            } else {
+              showToast('Fallo de Envío SMTP', errStr || 'Verifica correo y contraseña.', 'danger');
+            }
           }
         }).catch(err => {
           showToast('Error de Conexión', err.message, 'danger');
         });
+      } else if (emailConfig.service === 'emailjs' && window.emailjs && emailConfig.publicKey && emailConfig.serviceId) {
+        showToast('Enviando vía EmailJS...', `Despachando a ${emailConfig.adminEmail}...`, 'info');
+        try {
+          emailjs.init({ publicKey: emailConfig.publicKey });
+          emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
+            to_email: emailConfig.adminEmail,
+            to_name: 'Administrador Central',
+            subject: `[PRUEBA SIDERPERU] Validación de Correo Emisor (${testReq.id})`,
+            message_html: generateRequestEmailHTML(testReq),
+            message_text: generateRequestEmailText(testReq),
+            req_id: testReq.id,
+            material: testReq.medida,
+            cantidad: testReq.cantidad,
+            almacen: testReq.almacen,
+            codigo_sap: testReq.codigoSap
+          }).then(res => {
+            showToast('¡Correo EmailJS Enviado!', `Entregado exitosamente a ${emailConfig.adminEmail}.`, 'success');
+          }).catch(err => {
+            showToast('Error EmailJS', err.text || err.message || 'Verifica Service ID, Template ID y Public Key.', 'danger');
+          });
+        } catch(e) {
+          showToast('Error EmailJS', e.message, 'danger');
+        }
       } else {
         showToast('Correo de Prueba Generado', `Se generó la prueba oficial para ${emailConfig.adminEmail}.`, 'success');
       }

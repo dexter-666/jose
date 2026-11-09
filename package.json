@@ -1,7 +1,7 @@
 {
   "name": "sistema-stock-sider",
   "version": "1.0.0",
-  "description": "Sistema de Solicitudes y Stock por Almacenes SIDER (Portal Operario, Panel Administrador y Pantalla TV)",
+    "description": "Sistema de Solicitudes y Stock por Almacenes SIDER (Portal Operario y Panel Administrador)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

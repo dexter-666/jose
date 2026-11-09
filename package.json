@@ -16,8 +16,5 @@
     "convertidor"
   ],
   "author": "SIDERPERU",
-  "license": "ISC",
-  "dependencies": {
-    "nodemailer": "^10.4.0"
-  }
+  "license": "ISC"
 }

@@ -93,21 +93,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (pathname === '/api/send-email') {
-    let body = '';
-    req.on('data', chunk => { body += chunk; });
-    req.on('end', () => {
-      try {
-        req.body = body ? JSON.parse(body) : {};
-      } catch (e) {
-        req.body = {};
-      }
-      const sendEmailHandler = require('./api/send-email');
-      sendEmailHandler(req, res);
-    });
-    return;
-  }
-
   if (pathname === '/api/solicitudes') {
     let body = '';
     req.on('data', chunk => { body += chunk; });

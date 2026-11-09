@@ -1398,22 +1398,18 @@
           <!-- FIRST TIME SETUP (REGISTRATION) -->
           <div id="op-first-time-box" style="display:none; animation:fadeIn 0.3s ease;">
             <div style="background:var(--amber-50); border-left:4px solid var(--amber-500); padding:12px 16px; border-radius:10px; margin-bottom:18px; font-size:0.86rem; color:#92400e; line-height:1.4;">
-              <strong>¡Primer ingreso detectado!</strong> Registra tu correo para recibir las notificaciones y define tu contraseña de acceso.
+              <strong>¡Primer ingreso detectado!</strong> Define tu contraseña o PIN personal para autorizar tus solicitudes.
             </div>
             <div style="margin-bottom:14px;">
-              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Correo Corporativo o Personal</label>
-              <input type="email" id="op-first-email" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="correo@sider.com.pe" />
-            </div>
-            <div style="margin-bottom:14px;">
-              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Crear Nueva Contraseña</label>
-              <input type="password" id="op-first-pass" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="Mínimo 4 caracteres" />
+              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Crear Contraseña o PIN</label>
+              <input type="password" id="op-first-pass" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="Mínimo 3 caracteres (ej: 1234)" />
             </div>
             <div style="margin-bottom:18px;">
-              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Confirmar Contraseña</label>
-              <input type="password" id="op-first-pass-confirm" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="Repite tu contraseña" />
+              <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--slate-700); margin-bottom:6px;">Confirmar Contraseña o PIN</label>
+              <input type="password" id="op-first-pass-confirm" class="form-input-search" style="padding-left:16px; font-size:0.92rem;" placeholder="Repite tu contraseña o PIN" onkeydown="if(event.key==='Enter') completeOperarioRegistration()" />
             </div>
             <button class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem;" onclick="completeOperarioRegistration()">
-              Guardar Contraseña e Ingresar
+              Activar Acceso e Ingresar
             </button>
           </div>
 
@@ -1622,7 +1618,7 @@
                   </button>
                 </div>
                 <p style="font-size:0.84rem; color:var(--slate-500); margin-top:4px;">
-                  Aprueba o rechaza solicitudes, asigna notas operativas de transporte y visualiza las notificaciones oficiales de correo.
+                  Aprueba o rechaza solicitudes, asigna notas operativas de transporte y controla el stock físico en tiempo real.
                 </p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -1653,14 +1649,12 @@
                   <tr>
                     <th>ID / Hora</th>
                     <th>Colaborador</th>
-                    <th>Correo</th>
                     <th>Cód. SAP</th>
                     <th>Medida / Tipo</th>
                     <th>Cant.</th>
                     <th>Almacén</th>
                     <th>Estado</th>
-                    <th>Notificación</th>
-                    <th>Acción</th>
+                    <th>Acción Rápida</th>
                   </tr>
                 </thead>
                 <tbody id="admin-table-tbody"></tbody>
@@ -1850,69 +1844,6 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('modal-reject')">Cancelar</button>
         <button class="btn btn-danger" onclick="confirmRejectRequest()">Confirmar Rechazo</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: CENTRO DE NOTIFICACIONES & VISTA PREVIA DE CORREO -->
-  <div id="modal-email-preview" class="modal-overlay">
-    <div class="modal-box email-preview-modal-box">
-      <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div style="background:var(--sider-orange-100); color:var(--sider-orange-700); width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
-            <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-          <div>
-            <h3 class="modal-title">Centro de Notificaciones Oficiales SIDERPERU</h3>
-            <p style="font-size:0.78rem; color:var(--slate-500); margin-top:2px;">Previsualización de Correo Electrónico Institucional</p>
-          </div>
-        </div>
-        <button class="modal-close-btn" onclick="closeModal('modal-email-preview')"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-      </div>
-
-      <div class="modal-body" style="padding:18px 26px;">
-        <!-- EMAIL CLIENT SIMULATOR HEADER -->
-        <div class="email-client-bar">
-          <div class="email-client-row">
-            <span class="email-client-label">De:</span>
-            <span id="preview-email-from" style="color:#ffffff; font-weight:600;">SIDERPERU Notificaciones &lt;notificaciones@siderperu.com.pe&gt;</span>
-          </div>
-          <div class="email-client-row">
-            <span class="email-client-label">Para:</span>
-            <span id="preview-email-to" style="color:#fdba74; font-weight:700;">almacen.central@siderperu.com.pe</span>
-          </div>
-          <div class="email-client-row">
-            <span class="email-client-label">Asunto:</span>
-            <strong id="preview-email-subject" style="color:#ffffff;">[SIDERPERU] Solicitud de Despacho SOL-1001</strong>
-          </div>
-          <div class="email-client-row">
-            <span class="email-client-label">Fecha:</span>
-            <span id="preview-email-date" style="color:#cbd5e1;">Hoy, hace unos instantes</span>
-          </div>
-        </div>
-
-        <!-- RENDERED HTML EMAIL CONTAINER -->
-        <div id="preview-email-body" class="email-preview-body-frame"></div>
-      </div>
-
-      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-secondary btn-sm" onclick="copyCurrentEmailHTML()">
-            <svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copiar Código HTML
-          </button>
-          <button class="btn btn-secondary btn-sm" onclick="copyCurrentEmailText()">
-            <svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-            Copiar Texto
-          </button>
-        </div>
-        <div style="display:flex; gap:10px;">
-          <button class="btn btn-primary btn-sm" onclick="triggerMailtoFromPreview()">
-            <svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Abrir en Outlook / Webmail
-          </button>
-          <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-email-preview')">Cerrar</button>
-        </div>
       </div>
     </div>
   </div>
@@ -2235,7 +2166,7 @@
       const cred = savedCredentials[user.id];
 
       if (!cred) {
-        // PRIMER INGRESO: Requiere registrar correo y crear contrasena
+        // PRIMER INGRESO: Requiere crear contrasena o PIN
         if (firstBox) firstBox.style.display = 'block';
         if (retBox) retBox.style.display = 'none';
         const passInp = document.getElementById('op-first-pass');
@@ -2290,7 +2221,7 @@
       const cred = savedCredentials[selectedUserCandidate.id];
 
       if (cred && cred.password === pass) {
-        enterOperarioSession(selectedUserCandidate, cred.email);
+        enterOperarioSession(selectedUserCandidate);
         showToast('Sesión Iniciada', `Hola de nuevo, ${selectedUserCandidate.short}.`, 'success');
       } else {
         showToast('Credencial Inválida', 'La contraseña ingresada no es correcta.', 'danger');
@@ -2782,7 +2713,7 @@
       renderAdminTable();
       renderAdminCatalog();
       renderAdminStockManager();
-      loadEmailConfigForm();
+      
     }
 
     function renderAdminKPIs() {
@@ -2827,7 +2758,7 @@
       }
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:28px; color:var(--slate-400);">No se encontraron solicitudes con este filtro.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:28px; color:var(--slate-400);">No se encontraron solicitudes con este filtro.</td></tr>';
         return;
       }
 
@@ -2840,19 +2771,12 @@
         return `
           <tr>
             <td><strong>${r.id}</strong><br><small style="color:var(--slate-400);">${r.fecha}</small></td>
-            <td><strong>${r.operarioNombre}</strong><br><small style="color:var(--slate-500);">${r.operarioFull}</small></td>
-            <td><small>${r.email}</small></td>
+            <td><strong>${r.operarioNombre}</strong><br><small style="color:var(--slate-500);">ID: ${r.operarioId || ''}</small></td>
             <td><code>${r.codigoSap}</code></td>
-            <td><strong>${r.medida}</strong> (${r.tipo})</td>
-            <td><strong>${r.cantidad}</strong></td>
+            <td><strong>${r.medida}</strong> <span style="font-size:0.78rem; color:var(--slate-500);">(${r.tipo})</span></td>
+            <td><strong>${r.cantidad}</strong> <small style="color:var(--slate-500);">unid.</small></td>
             <td><span class="tag-badge">${r.almacen}</span></td>
             <td>${badge}</td>
-            <td>
-              <button class="btn btn-secondary btn-sm" onclick="previewEmailModal('${r.id}')" title="Ver Notificación Oficial de Correo" style="font-size:0.75rem; padding:4px 8px;">
-                <svg class="icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                Ver Correo
-              </button>
-            </td>
             <td>
               <div style="display:flex; gap:6px;">
                 <button class="btn btn-sm btn-primary" onclick="openApproveModal(${realIdx})">Aprobar</button>
@@ -2915,9 +2839,7 @@
       renderAdminDashboard();
       if (activeOperario) renderOperarioRequests();
 
-      dispatchEmailNotification(req, 'respuesta');
-
-      showToast('Solicitud Aprobada', `Solicitud ${req.id} autorizada para despacho en ${selectedModalWh}.`, 'success');
+            showToast('Solicitud Aprobada', `Solicitud ${req.id} autorizada para despacho en ${selectedModalWh}.`, 'success');
     }
 
     function openRejectModal(index) {
@@ -2948,9 +2870,7 @@
       renderAdminDashboard();
       if (activeOperario) renderOperarioRequests();
 
-      dispatchEmailNotification(req, 'respuesta');
-
-      showToast('Solicitud Rechazada', `La solicitud ${req.id} ha sido rechazada.`, 'warning');
+            showToast('Solicitud Rechazada', `La solicitud ${req.id} ha sido rechazada.`, 'warning');
     }
 
     // --- MASTER SAP CATALOG MANAGEMENT (MATERIALES Y TIPOS) ---
@@ -3278,13 +3198,13 @@
         showToast('Sin Datos', 'No hay solicitudes para exportar.', 'warning');
         return;
       }
-      const headers = ['ID', 'Fecha', 'Operario', 'Nombre Completo', 'Email', 'Codigo SAP', 'Medida', 'Tipo', 'Cantidad', 'Almacen', 'Estado', 'Comentario Admin'];
+      const headers = ['ID', 'Fecha', 'ID SAP', 'Operario', 'Nombre Completo', 'Codigo SAP', 'Medida', 'Tipo', 'Cantidad', 'Almacen', 'Estado', 'Comentario Admin'];
       const rows = requestsList.map(r => [
         `"${r.id}"`,
         `"${r.fecha} ${r.fechaCompleta || ''}"`,
+        `"${r.operarioId || ''}"`,
         `"${r.operarioNombre}"`,
         `"${r.operarioFull}"`,
-        `"${r.email}"`,
         `"${r.codigoSap}"`,
         `"${r.medida}"`,
         `"${r.tipo}"`,

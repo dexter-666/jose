@@ -1867,7 +1867,7 @@
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:20px;">
               <div>
                 <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--slate-700); margin-bottom:6px;">Correo Receptor del Administrador / Almacén Central</label>
-                <input type="email" id="email-cfg-admin" class="form-input-search" style="padding:10px 14px; font-size:0.9rem;" placeholder="proyectofinal123.666@gmail.com" value="proyectofinal123.666@gmail.com" />
+                <input type="email" id="email-cfg-admin" class="form-input-search" style="padding:10px 14px; font-size:0.9rem;" placeholder="tupacv8@gmail.com" value="tupacv8@gmail.com" />
                 <span style="font-size:0.75rem; color:var(--slate-500); margin-top:4px; display:block;">Aquí se envían las alertas de nuevas solicitudes de los operarios.</span>
               </div>
 
@@ -1993,7 +1993,7 @@
                   <span>Notificar al Operario por correo en cada aprobación o rechazo de solicitud</span>
                 </label>
                 <label style="display:flex; align-items:center; gap:10px; font-size:0.86rem; color:var(--slate-700); cursor:pointer;">
-                  <input type="checkbox" id="email-cfg-show-preview" checked style="width:18px; height:18px; accent-color:var(--sider-orange-600);" />
+                  <input type="checkbox" id="email-cfg-show-preview" style="width:18px; height:18px; accent-color:var(--sider-orange-600);" />
                   <span>Habilitar centro de visualización interactiva y copia de plantillas HTML</span>
                 </label>
               </div>
@@ -2260,13 +2260,13 @@
 
     // DEFAULT EMAIL CONFIGURATION (SMTP + EMAILJS + RESEND)
     const DEFAULT_EMAIL_CONFIG = {
-      adminEmail: "almacen.central@siderperu.com.pe",
+      adminEmail: "tupacv8@gmail.com",
       senderName: "SIDERPERU - Sistema de Notificaciones SAP",
-      service: "emailjs",
+      service: "smtp",
       notifyAdminOnNew: true,
       notifyOperarioOnAction: true,
-      showPreviewOnAction: true,
-      smtpUser: "",
+      showPreviewOnAction: false,
+      smtpUser: "proyectofinal123.666@gmail.com",
       smtpPass: "",
       smtpService: "gmail",
       smtpHost: "smtp.gmail.com",
@@ -2778,15 +2778,9 @@
 
       showToast(
         'Solicitud Enviada con Éxito',
-        `Pedido ${newReq.id} registrado para carga en ${newReq.almacen}. Notificación enviada a Administración (${emailConfig.adminEmail}).`,
+        `Pedido ${newReq.id} registrado para carga en ${newReq.almacen}. Notificación enviada al Administrador (${emailConfig.adminEmail}).`,
         'success'
       );
-
-      if (emailConfig.showPreviewOnAction) {
-        setTimeout(() => {
-          previewEmailModal(newReq.id, 'solicitud');
-        }, 600);
-      }
     }
 
     function cancelOperarioRequest(id) {
@@ -3057,12 +3051,6 @@
       dispatchEmailNotification(req, 'respuesta');
 
       showToast('Solicitud Aprobada', `Se notificó por correo oficial a ${req.email} y se autorizó el despacho en ${selectedModalWh}.`, 'success');
-
-      if (emailConfig.showPreviewOnAction) {
-        setTimeout(() => {
-          previewEmailModal(req.id, 'respuesta');
-        }, 500);
-      }
     }
 
     function openRejectModal(index) {
@@ -3096,12 +3084,6 @@
       dispatchEmailNotification(req, 'respuesta');
 
       showToast('Solicitud Rechazada', `Se envió notificación oficial de rechazo a ${req.email}.`, 'warning');
-
-      if (emailConfig.showPreviewOnAction) {
-        setTimeout(() => {
-          previewEmailModal(req.id, 'respuesta');
-        }, 500);
-      }
     }
 
     // --- MASTER SAP CATALOG MANAGEMENT (MATERIALES Y TIPOS) ---
@@ -3670,7 +3652,7 @@ ${req.comentarioAdmin || (isApproved ? 'Solicitud APROBADA.' : 'Solicitud NO PRO
 SIDERPERU S.A.A. - Planta Chimbote`;
     }
 
-    // DISPATCH NOTIFICATION HANDLER (SMTP / EMAILJS / API / MAILTO)
+    // DISPATCH NOTIFICATION HANDLER (Envío silencioso en segundo plano sin modales)
     function dispatchEmailNotification(req, type) {
       const isRequest = (type === 'solicitud');
       const toEmail = isRequest ? emailConfig.adminEmail : req.email;
@@ -3681,37 +3663,31 @@ SIDERPERU S.A.A. - Planta Chimbote`;
       const html = isRequest ? generateRequestEmailHTML(req) : generateResponseEmailHTML(req);
       const text = isRequest ? generateRequestEmailText(req) : generateResponseEmailText(req);
 
-      // 1. Envío SMTP Directo con Nodemailer
-      if (emailConfig.service === 'smtp' && emailConfig.smtpUser && emailConfig.smtpPass) {
-        fetch('/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            to: toEmail,
-            subject: subject,
-            html: html,
-            text: text,
-            reqId: req.id,
-            smtpUser: emailConfig.smtpUser,
-            smtpPass: emailConfig.smtpPass,
-            smtpService: emailConfig.smtpService || 'gmail',
-            smtpHost: emailConfig.smtpHost || 'smtp.gmail.com',
-            smtpPort: emailConfig.smtpPort || 465
-          })
-        }).then(r => r.json()).then(res => {
-          if (res.success) {
-            console.log('Notificación SMTP enviada con éxito:', res);
-          } else {
-            console.warn('Alerta SMTP:', res.error || res.message);
-          }
-        }).catch(err => {
-          console.warn('Error de conexión con servicio de correo:', err.message);
-        });
-        return;
-      }
+      // 1. Envío asíncrono en segundo plano vía Endpoint API (/api/send-email)
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: toEmail,
+          subject: subject,
+          html: html,
+          text: text,
+          reqId: req.id,
+          adminEmail: emailConfig.adminEmail,
+          smtpUser: emailConfig.smtpUser || 'proyectofinal123.666@gmail.com',
+          smtpPass: emailConfig.smtpPass || '',
+          smtpService: emailConfig.smtpService || 'gmail',
+          smtpHost: emailConfig.smtpHost || 'smtp.gmail.com',
+          smtpPort: emailConfig.smtpPort || 465
+        })
+      }).then(r => r.json()).then(res => {
+        console.log('[SIDER Notification]:', res);
+      }).catch(err => {
+        console.warn('[SIDER Notification]:', err.message);
+      });
 
-      // 2. Envío directo desde navegador mediante EmailJS
-      if (emailConfig.service === 'emailjs' && window.emailjs && emailConfig.publicKey && emailConfig.serviceId) {
+      // 2. Envío complementario vía EmailJS si está configurado el template
+      if (window.emailjs && emailConfig.publicKey && emailConfig.serviceId && emailConfig.templateId) {
         try {
           emailjs.init({ publicKey: emailConfig.publicKey });
           emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
@@ -3734,32 +3710,8 @@ SIDERPERU S.A.A. - Planta Chimbote`;
             operario_email: req.email,
             admin_email: emailConfig.adminEmail,
             comentario_admin: req.comentarioAdmin || ''
-          }).then(res => {
-            console.log('Notificación EmailJS despachada:', res);
-          }).catch(err => {
-            console.warn('Error EmailJS:', err);
-          });
-        } catch(e) {
-          console.warn('EmailJS catch:', e);
-        }
-        return;
-      }
-
-      // 3. Envío mediante Endpoint Serverless Vercel / Resend
-      if (emailConfig.service === 'api') {
-        fetch('/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            to: toEmail,
-            subject: subject,
-            html: html,
-            text: text,
-            reqId: req.id
-          })
-        }).catch(err => {
-          console.warn('Endpoint de correo en segundo plano:', err.message);
-        });
+          }).catch(e => console.warn('[EmailJS]:', e));
+        } catch(e) {}
       }
     }
 

@@ -1563,9 +1563,7 @@
         <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="loginAdmin()">
           Iniciar Sesión Administrativa
         </button>
-        <p style="font-size:0.75rem; color:var(--slate-400); text-align:center; margin-top:14px;">
-          Credenciales de evaluación: <strong>admin</strong> / <strong>sider2026</strong>
-        </p>
+        <p style="font-size:0.75rem; color:var(--slate-400); text-align:center; margin-top:14px;">Acceso restringido para personal autorizado de planta.</p>
       </div>
 
       <!-- ADMIN DASHBOARD -->
@@ -2017,23 +2015,14 @@
     let requestsList = JSON.parse(localStorage.getItem('sider_requests') || '[]');
     let warehouseStock = JSON.parse(localStorage.getItem('sider_wh_stock') || JSON.stringify(INITIAL_STOCK));
     let warehouseTypes = JSON.parse(localStorage.getItem('sider_wh_types') || '{"PT 08":["Nacional","Importado","Fecoxi"],"PT 09":["Nacional","Importado","FM"],"PT 15 BAHÍA":["Nacional","Fecoxi","FM"],"PT15 CURVA":["Nacional","Importado"]}');
-    let emailConfig = JSON.parse(localStorage.getItem('sider_email_config') || JSON.stringify(DEFAULT_EMAIL_CONFIG));
-    if (!emailConfig.smtpUser) emailConfig.smtpUser = 'proyectofinal123.666@gmail.com';
-    if (!emailConfig.adminEmail || emailConfig.adminEmail.includes('almacen.central')) emailConfig.adminEmail = 'proyectofinal123.666@gmail.com';
-    if (!emailConfig.serviceId) emailConfig.serviceId = 'service_do2r7ve';
-    if (!emailConfig.publicKey) emailConfig.publicKey = 'EctPt5eW3Ppdog1fZ';
-    emailConfig.service = 'emailjs';
-
-    // ACTIVE SESSION STATE
+        // ACTIVE SESSION STATE
     let activeOperario = null;
     let selectedUserCandidate = null;
     let currentAdminFilter = 'TODOS';
     let currentAdminTab = 'requests';
     let pendingActionIndex = null;
     let selectedModalWh = 'PT 08';
-    let currentPreviewEmail = null;
-
-    // CALCULATOR STATE
+        // CALCULATOR STATE
     let calcState = {
       diametro: '1/2\"',
       tipo: 'Nacional',
@@ -2757,12 +2746,9 @@
       const u = (document.getElementById('admin-user-input').value || '').trim();
       const p = (document.getElementById('admin-pass-input').value || '').trim();
 
-      const isDefault = (u.toLowerCase() === 'admin' && p === 'sider2026');
-      const isGmailFull = (u.toLowerCase() === 'proyectofinal123.666@gmail.com' && (p === 'ProyectoFinal666' || p === 'sider2026'));
-      const isGmailUser = (u.toLowerCase() === 'proyectofinal123.666' && (p === 'ProyectoFinal666' || p === 'sider2026'));
-      const isAdminWithGmailPass = (u.toLowerCase() === 'admin' && p === 'ProyectoFinal666');
+      const isAuthorized = (u.toLowerCase() === 'admin' && p === 'sider2026');
 
-      if (isDefault || isGmailFull || isGmailUser || isAdminWithGmailPass) {
+      if (isAuthorized) {
         sessionStorage.setItem('sider_admin_logged', 'true');
         document.getElementById('admin-login-card').style.display = 'none';
         document.getElementById('admin-dashboard-view').style.display = 'block';
@@ -2771,7 +2757,7 @@
         renderAdminDashboard();
         showToast('Acceso Autorizado', 'Bienvenido al Panel de Control de Administración SIDER.', 'success');
       } else {
-        showToast('Credenciales Inválidas', 'Usuario o contraseña incorrectos. Puedes ingresar con admin / sider2026 o tu correo proyectofinal123.666@gmail.com.', 'danger');
+        showToast('Credenciales Inválidas', 'Usuario o contraseña incorrectos. Por favor verifique sus datos.', 'danger');
       }
     }
 

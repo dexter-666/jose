@@ -18,7 +18,17 @@ El archivo [`vercel.json`](./vercel.json) gestiona automáticamente las rutas li
 - **`https://tu-proyecto.vercel.app/`** ➔ Portal del Operario (Calculadora / Convertidor SAP)
 - **`https://tu-proyecto.vercel.app/admin`** ➔ Panel de Control Administrativo (Módulo Privado / Oculto)
 - **`https://tu-proyecto.vercel.app/api/usuarios`** ➔ API REST con los 1,093 usuarios precargados
+- **`https://tu-proyecto.vercel.app/api/solicitudes`** ➔ API REST / Serverless de Sincronización en la Nube Multi-PC
 - **`https://tu-proyecto.vercel.app/api/send-email`** ➔ Serverless Endpoint para notificaciones por correo
+
+---
+
+## 🌐 Sincronización en la Nube en Tiempo Real (Multi-Dispositivo)
+
+El sistema cuenta con un **Motor de Sincronización Central en la Nube**:
+- **Multi-PC:** Un operario puede enviar una solicitud desde su laptop o celular y el Administrador en otra computadora la recibe automáticamente en pantalla en cuestión de segundos (sin recargar la página).
+- **Resolución en Vivo:** Al aprobar o rechazar una solicitud desde el panel `/admin`, el operario ve cambiar su estado (*Pendiente* ➔ *Aprobado*) en su pantalla de inmediato.
+- **Doble Capa de Redundancia:** Combina almacenamiento local inmediato (`localStorage`) con el endpoint `/api/solicitudes` y base de datos central en la nube.
 
 ---
 

@@ -1370,6 +1370,10 @@
     </a>
 
     <div class="topbar-actions" id="topbar-actions">
+      <div id="cloud-sync-pill" style="display:inline-flex; align-items:center; gap:8px; background:rgba(34, 197, 94, 0.08); border:1px solid rgba(34, 197, 94, 0.25); padding:6px 14px; border-radius:999px; font-size:0.78rem; font-weight:700; cursor:pointer;" onclick="syncPullFromCloud(false)" title="Haga clic para forzar sincronización instantánea entre computadoras">
+        <span id="cloud-sync-indicator" style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e;"></span>
+        <span id="cloud-sync-text" style="color:#15803d;">En Línea (Tiempo Real)</span>
+      </div>
       <!-- Dynamic header content -->
     </div>
   </header>
@@ -1663,7 +1667,13 @@
           <div class="card">
             <div class="card-header">
               <div>
-                <div class="card-title">Bandeja de Solicitudes de Despacho</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                  <div class="card-title">Bandeja de Solicitudes de Despacho</div>
+                  <button class="btn btn-secondary btn-sm" onclick="syncPullFromCloud(false)" title="Sincronizar Solicitudes en Tiempo Real">
+                    <svg class="icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    Sincronizar Nube
+                  </button>
+                </div>
                 <p style="font-size:0.84rem; color:var(--slate-500); margin-top:4px;">
                   Aprueba o rechaza solicitudes, asigna notas operativas de transporte y visualiza las notificaciones oficiales de correo.
                 </p>
@@ -2583,6 +2593,7 @@
 
       savedCredentials[selectedUserCandidate.id] = { password: pass, email: email };
       localStorage.setItem('sider_credentials', JSON.stringify(savedCredentials));
+      syncPushToCloud();
       showToast('¡Cuenta Activada!', `Bienvenido ${selectedUserCandidate.short}. Contraseña guardada correctamente.`, 'success');
       enterOperarioSession(selectedUserCandidate, email);
     }
@@ -2747,6 +2758,185 @@
       }
     }
 
+    
+    // =========================================================================
+    // MOTOR DE SINCRONIZACIÓN EN LA NUBE MULTI-DISPOSITIVO (TIEMPO REAL)
+    // SIDERPERU - Sincroniza operarios y administrador entre diferentes PCs
+    // =========================================================================
+    const CLOUD_MASTER_ID = 'ff808181a09d98f701a1becf8d5b6c18';
+    const DIRECT_CLOUD_URL = 'https://api.restful-api.dev/objects/' + CLOUD_MASTER_ID;
+    let isSyncingCloud = false;
+    let cloudPollInterval = null;
+
+    async function syncPullFromCloud(silent = true) {
+      if (isSyncingCloud) return;
+      isSyncingCloud = true;
+      try {
+        let remoteData = null;
+
+        // 1. Probar endpoint del servidor /api/solicitudes
+        try {
+          const res = await fetch('/api/solicitudes', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+          });
+          if (res.ok) {
+            const j = await res.json();
+            if (j.success && Array.isArray(j.solicitudes)) {
+              remoteData = j;
+            }
+          }
+        } catch(e) {}
+
+        // 2. Si falla o estamos en entorno estático puro, consultar directo a la nube
+        if (!remoteData) {
+          try {
+            const resDirect = await fetch(DIRECT_CLOUD_URL, {
+              headers: { 'Accept': 'application/json' }
+            });
+            if (resDirect.ok) {
+              const jDirect = await resDirect.json();
+              if (jDirect.data && Array.isArray(jDirect.data.solicitudes)) {
+                remoteData = {
+                  solicitudes: jDirect.data.solicitudes,
+                  stock: jDirect.data.stock,
+                  credenciales: jDirect.data.credenciales
+                };
+              }
+            }
+          } catch(e) {}
+        }
+
+        if (remoteData && Array.isArray(remoteData.solicitudes)) {
+          let hasChanges = false;
+          const localMap = new Map(requestsList.map(r => [r.id, r]));
+
+          remoteData.solicitudes.forEach(rem => {
+            const loc = localMap.get(rem.id);
+            if (!loc) {
+              localMap.set(rem.id, rem);
+              hasChanges = true;
+            } else {
+              // Si cambió de estado en la otra PC (ej: Aprobado o Rechazado)
+              if (loc.estado !== rem.estado || loc.almacen !== rem.almacen || (rem.comentarioAdmin && loc.comentarioAdmin !== rem.comentarioAdmin)) {
+                localMap.set(rem.id, Object.assign({}, loc, rem));
+                hasChanges = true;
+              }
+            }
+          });
+
+          // También asegurar que lo que tengamos localmente que aún no esté en la nube se conserve
+          if (hasChanges || localMap.size !== requestsList.length) {
+            requestsList = Array.from(localMap.values());
+            requestsList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            localStorage.setItem('sider_requests', JSON.stringify(requestsList));
+
+            if (activeOperario) renderOperarioRequests();
+            renderAdminDashboard();
+
+            if (!silent) {
+              showToast('Nube Sincronizada', `Se sincronizaron ${requestsList.length} solicitudes desde la red central.`, 'info');
+            }
+          }
+
+          // Sincronizar credenciales de primer ingreso
+          if (remoteData.credenciales && Object.keys(remoteData.credenciales).length > 0) {
+            Object.assign(savedCredentials, remoteData.credenciales);
+            localStorage.setItem('sider_credentials', JSON.stringify(savedCredentials));
+          }
+
+          // Sincronizar stock de almacenes
+          if (remoteData.stock && Object.keys(remoteData.stock).length > 0) {
+            let stockChanged = false;
+            Object.keys(remoteData.stock).forEach(wh => {
+              if (!warehouseStock[wh]) warehouseStock[wh] = {};
+              Object.assign(warehouseStock[wh], remoteData.stock[wh]);
+              stockChanged = true;
+            });
+            if (stockChanged) {
+              localStorage.setItem('sider_wh_stock', JSON.stringify(warehouseStock));
+              updateCalculatorView();
+              renderAdminStockManager();
+            }
+          }
+
+          updateSyncStatusBadge('online');
+        }
+      } catch (err) {
+        console.warn('[Cloud Sync Pull]', err.message);
+        updateSyncStatusBadge('offline');
+      } finally {
+        isSyncingCloud = false;
+      }
+    }
+
+    async function syncPushToCloud() {
+      try {
+        const payload = {
+          solicitudes: requestsList,
+          stock: warehouseStock,
+          credenciales: savedCredentials
+        };
+
+        // 1. Enviar a /api/solicitudes
+        fetch('/api/solicitudes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json()).then(res => {
+          console.log('[Sync /api/solicitudes OK]', res);
+        }).catch(() => {});
+
+        // 2. Enviar directo a la nube central REST
+        fetch(DIRECT_CLOUD_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'SIDERPERU_SOLICITUDES_MASTER_V1',
+            data: {
+              solicitudes: requestsList,
+              stock: warehouseStock,
+              credenciales: savedCredentials,
+              lastUpdated: new Date().toISOString()
+            }
+          })
+        }).then(r => r.json()).then(res => {
+          console.log('[Sync Cloud Direct OK]', res);
+          updateSyncStatusBadge('online');
+        }).catch(e => {
+          console.warn('[Sync Cloud Direct Err]', e.message);
+        });
+
+      } catch(e) {
+        console.warn('[Sync Push Ex]', e);
+      }
+    }
+
+    function updateSyncStatusBadge(status) {
+      const dot = document.getElementById('cloud-sync-indicator');
+      const text = document.getElementById('cloud-sync-text');
+      if (!dot || !text) return;
+      if (status === 'online') {
+        dot.style.background = '#22c55e';
+        dot.style.boxShadow = '0 0 8px #22c55e';
+        text.textContent = 'En Línea (Sincronizado)';
+        text.style.color = '#15803d';
+      } else {
+        dot.style.background = '#f59e0b';
+        dot.style.boxShadow = 'none';
+        text.textContent = 'Modo Local';
+        text.style.color = '#b45309';
+      }
+    }
+
+    function startCloudPolling() {
+      if (cloudPollInterval) clearInterval(cloudPollInterval);
+      syncPullFromCloud(true);
+      cloudPollInterval = setInterval(() => {
+        syncPullFromCloud(true);
+      }, 3500);
+    }
+
     function submitOperarioRequest() {
       if (!activeOperario) return;
       const medidaFinal = calcState.largo === 'Estándar'
@@ -2767,12 +2957,14 @@
         cantidad: calcState.cantidad,
         almacen: calcState.almacen,
         estado: 'PENDIENTE',
-        comentarioAdmin: ''
+        comentarioAdmin: '',
+        timestamp: Date.now()
       };
 
       requestsList.unshift(newReq);
       localStorage.setItem('sider_requests', JSON.stringify(requestsList));
       renderOperarioRequests();
+      syncPushToCloud();
 
       dispatchEmailNotification(newReq, 'solicitud');
 
@@ -2788,7 +2980,8 @@
       if (idx !== -1 && requestsList[idx].estado === 'PENDIENTE') {
         requestsList.splice(idx, 1);
         localStorage.setItem('sider_requests', JSON.stringify(requestsList));
-        renderOperarioRequests();
+      renderOperarioRequests();
+      syncPushToCloud();
         showToast('Solicitud Cancelada', 'La solicitud pendiente ha sido eliminada.', 'info');
       }
     }
@@ -3731,7 +3924,8 @@ SIDERPERU S.A.A. - Planta Chimbote`;
         cantidad: 20,
         almacen: 'PT 08',
         estado: 'PENDIENTE',
-        comentarioAdmin: ''
+        comentarioAdmin: '',
+        timestamp: Date.now()
       };
 
       let isRequest = true;

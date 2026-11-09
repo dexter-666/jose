@@ -29,6 +29,21 @@ if (fs.existsSync(envPath)) {
 }
 
 const server = http.createServer((req, res) => {
+  // Polyfill de compatibilidad Vercel Serverless (res.status / res.json)
+  if (!res.status) {
+    res.status = function(code) {
+      this.statusCode = code;
+      return this;
+    };
+  }
+  if (!res.json) {
+    res.json = function(data) {
+      this.setHeader('Content-Type', 'application/json');
+      this.end(JSON.stringify(data));
+      return this;
+    };
+  }
+
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname;
 
@@ -89,6 +104,21 @@ const server = http.createServer((req, res) => {
       }
       const sendEmailHandler = require('./api/send-email');
       sendEmailHandler(req, res);
+    });
+    return;
+  }
+
+  if (pathname === '/api/solicitudes') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        req.body = body ? JSON.parse(body) : {};
+      } catch (e) {
+        req.body = {};
+      }
+      const solicitudesHandler = require('./api/solicitudes');
+      solicitudesHandler(req, res);
     });
     return;
   }

@@ -13,6 +13,17 @@ module.exports = async (req, res) => {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
+  if (!res.status) {
+    res.status = function(code) { this.statusCode = code; return this; };
+  }
+  if (!res.json) {
+    res.json = function(data) {
+      this.setHeader('Content-Type', 'application/json');
+      this.end(JSON.stringify(data));
+      return this;
+    };
+  }
+
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
